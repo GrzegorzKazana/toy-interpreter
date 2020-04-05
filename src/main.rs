@@ -4,7 +4,7 @@ mod utils;
 use parser::parse;
 
 fn main() {
-    let input = "2 + 2";
+    let input = "(2) + 2";
 
     match parse(input) {
         Result::Ok(tokens) => println!("{:#?}", tokens),

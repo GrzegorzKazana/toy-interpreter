@@ -1,5 +1,4 @@
-use super::number_parser::NumberParser;
-use super::operator_parser::OperatorParser;
+use super::common::{CharParser, RegexParser};
 use crate::parser::{Parser, ParsingResult, Token};
 
 pub struct CombinedParser {
@@ -8,10 +7,17 @@ pub struct CombinedParser {
 
 impl CombinedParser {
     pub fn new() -> Self {
+        let number_parser = RegexParser::new(r"^(\d+)", Box::new(Token::NumberToken));
+        let opeartor_parser = RegexParser::new(r"^(\+|-)", Box::new(Token::OperatorToken));
+        let left_paren_parser = CharParser::new('(', Box::new(|_| Token::LeftParenthesis));
+        let right_paren_parser = CharParser::new(')', Box::new(|_| Token::RightParenthesis));
+
         CombinedParser {
             parsers: vec![
-                Box::new(NumberParser::new()),
-                Box::new(OperatorParser::new()),
+                Box::new(number_parser),
+                Box::new(opeartor_parser),
+                Box::new(left_paren_parser),
+                Box::new(right_paren_parser),
             ],
         }
     }

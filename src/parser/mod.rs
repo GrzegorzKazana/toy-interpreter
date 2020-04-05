@@ -1,7 +1,5 @@
 mod combined_parser;
 mod common;
-mod number_parser;
-mod operator_parser;
 
 use combined_parser::CombinedParser;
 
@@ -12,6 +10,8 @@ type ParsingResult<T> = Option<(T, SourceRest)>;
 pub enum Token {
     NumberToken(String),
     OperatorToken(String),
+    LeftParenthesis,
+    RightParenthesis,
 }
 
 pub trait Parser<T> {
