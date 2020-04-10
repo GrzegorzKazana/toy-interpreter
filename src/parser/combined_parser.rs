@@ -11,6 +11,8 @@ impl CombinedParser {
         let opeartor_parser = RegexParser::new(r"^(\+|-)", Box::new(Token::OperatorToken));
         let left_paren_parser = CharParser::new('(', Box::new(|_| Token::LeftParenthesis));
         let right_paren_parser = CharParser::new(')', Box::new(|_| Token::RightParenthesis));
+        let identifier_parser = RegexParser::new(r"^\w+", Box::new(Token::Identifier));
+        let assignment_parser = CharParser::new('=', Box::new(|_| Token::Assignment));
 
         CombinedParser {
             parsers: vec![
@@ -18,6 +20,8 @@ impl CombinedParser {
                 Box::new(opeartor_parser),
                 Box::new(left_paren_parser),
                 Box::new(right_paren_parser),
+                Box::new(identifier_parser),
+                Box::new(assignment_parser),
             ],
         }
     }

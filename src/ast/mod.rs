@@ -17,6 +17,9 @@ pub enum ExpressionNode {
     NumberLiteral {
         value: u32,
     },
+    Variable {
+        identifier: String,
+    },
 }
 
 #[derive(Debug)]
@@ -25,6 +28,20 @@ pub enum StatementNode {
         identifier: String,
         expression: ExpressionNode,
     },
+}
+
+fn consume_variable_identifier(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+    let (head, rest) = tokens.split_first()?;
+
+    match head {
+        Token::Identifier(identifier) => Option::Some((
+            ExpressionNode::Variable {
+                identifier: identifier.to_string(),
+            },
+            rest,
+        )),
+        _ => Option::None,
+    }
 }
 
 fn consume_number_literal(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
@@ -39,7 +56,9 @@ fn consume_number_literal(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])
 
 pub fn consume_math_operation(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
     fn build_math_expression(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
-        consume_parenthesis(tokens).or_else(|| consume_number_literal(tokens))
+        consume_parenthesis(tokens)
+            .or_else(|| consume_number_literal(tokens))
+            .or_else(|| consume_variable_identifier(tokens))
     }
 
     let (node_a, rest_a) = build_math_expression(tokens)?;
@@ -83,10 +102,36 @@ pub fn build_expression(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> 
     consume_math_operation(tokens)
         .or_else(|| consume_parenthesis(tokens))
         .or_else(|| consume_number_literal(tokens))
+        .or_else(|| consume_variable_identifier(tokens))
+}
+
+pub fn consume_assignemnt(tokens: &[Token]) -> Option<(StatementNode, &[Token])> {
+    if tokens.len() < 3 {
+        return Option::None;
+    }
+
+    match (&tokens[0], &tokens[1], &tokens[2..]) {
+        (Token::Identifier(identifier), Token::Assignment, tokens_after_assignment) => {
+            let (expression, rest) = build_expression(tokens_after_assignment)?;
+            let result_node = StatementNode::AssignmentNode {
+                identifier: identifier.clone(),
+                expression,
+            };
+
+            Option::Some((result_node, rest))
+        }
+        _ => Option::None,
+    }
+}
+
+pub fn build_statement(tokens: &[Token]) -> Option<(StatementNode, &[Token])> {
+    consume_assignemnt(tokens)
 }
 
 pub fn build(tokens: &[Token]) -> Option<(Node, &[Token])> {
-    build_expression(tokens).map(|(node, rest)| (Node::Expression(node), rest))
+    build_statement(tokens)
+        .map(|(node, rest)| (Node::Statement(node), rest))
+        .or_else(|| build_expression(tokens).map(|(node, rest)| (Node::Expression(node), rest)))
 }
 
 pub fn run(tokens: &[Token]) -> Result<Vec<Node>, &str> {
@@ -104,6 +149,8 @@ pub fn run(tokens: &[Token]) -> Result<Vec<Node>, &str> {
                 break if left_to_parse.len() == 0 {
                     Result::Ok(nodes)
                 } else {
+                    println!("{:#?}", nodes);
+                    println!("{:#?}", left_to_parse);
                     Result::Err("Failed to fully consume the tokens")
                 }
             }

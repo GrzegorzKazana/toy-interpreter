@@ -12,6 +12,8 @@ pub enum Token {
     OperatorToken(String),
     LeftParenthesis,
     RightParenthesis,
+    Identifier(String),
+    Assignment,
 }
 
 pub trait Parser<T> {
