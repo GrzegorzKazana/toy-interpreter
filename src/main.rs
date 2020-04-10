@@ -1,9 +1,6 @@
-mod ast;
 mod parser;
+mod tokenizer;
 mod utils;
-
-use ast::run;
-use parser::parse;
 
 fn main() {
     // let input = "(2) + 2";
@@ -12,10 +9,10 @@ fn main() {
                  b = 2\n\
                  c = a + b";
 
-    match parse(input) {
+    match tokenizer::run(input) {
         Result::Ok(tokens) => {
             println!("{:#?}", tokens);
-            let x = run(&tokens);
+            let x = parser::run(&tokens);
             println!("Ast:");
             println!("{:#?}", x)
         }

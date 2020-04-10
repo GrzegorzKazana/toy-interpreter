@@ -1,45 +1,159 @@
-mod combined_parser;
-mod common;
-
-use combined_parser::CombinedParser;
-
-type SourceRest = String;
-type ParsingResult<T> = Option<(T, SourceRest)>;
+use crate::tokenizer::Token;
+use crate::utils::partition;
 
 #[derive(Debug)]
-pub enum Token {
-    NumberToken(String),
-    OperatorToken(String),
-    LeftParenthesis,
-    RightParenthesis,
-    Identifier(String),
-    Assignment,
+pub enum Node {
+    Expression(ExpressionNode),
+    Statement(StatementNode),
 }
 
-pub trait Parser<T> {
-    fn parse(&self, input: &String) -> ParsingResult<T>;
+#[derive(Debug)]
+pub enum ExpressionNode {
+    NumericalExpression {
+        node_a: Box<ExpressionNode>,
+        op: String,
+        node_b: Box<ExpressionNode>,
+    },
+    NumberLiteral {
+        value: u32,
+    },
+    Variable {
+        identifier: String,
+    },
 }
 
-pub fn parse(input: &str) -> Result<Vec<Token>, &str> {
-    let parser = CombinedParser::new();
+#[derive(Debug)]
+pub enum StatementNode {
+    AssignmentNode {
+        identifier: String,
+        expression: ExpressionNode,
+    },
+}
 
-    let mut parsing_input = String::from(input);
-    let mut tokens: Vec<Token> = Vec::new();
+fn consume_variable_identifier(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+    let (head, rest) = tokens.split_first()?;
+
+    match head {
+        Token::Identifier(identifier) => Option::Some((
+            ExpressionNode::Variable {
+                identifier: identifier.to_string(),
+            },
+            rest,
+        )),
+        _ => Option::None,
+    }
+}
+
+fn consume_number_literal(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+    match tokens.split_first() {
+        Option::Some((Token::NumberToken(number_str), rest)) => number_str
+            .parse()
+            .map(|value| (ExpressionNode::NumberLiteral { value }, rest))
+            .ok(),
+        _ => Option::None,
+    }
+}
+
+pub fn consume_math_operation(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+    fn build_math_expression(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+        consume_parenthesis(tokens)
+            .or_else(|| consume_number_literal(tokens))
+            .or_else(|| consume_variable_identifier(tokens))
+    }
+
+    let (node_a, rest_a) = build_math_expression(tokens)?;
+    let (maybe_operator, rest_after_op) = rest_a.split_first()?;
+
+    match maybe_operator {
+        Token::OperatorToken(op) => {
+            let (node_b, rest_b) = build_expression(rest_after_op)?;
+            let result_node = ExpressionNode::NumericalExpression {
+                node_a: Box::new(node_a),
+                node_b: Box::new(node_b),
+                op: op.clone(),
+            };
+
+            Option::Some((result_node, rest_b))
+        }
+        _ => Option::None,
+    }
+}
+
+pub fn consume_parenthesis(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+    let is_right_parenthesis = |token: &Token| match token {
+        Token::RightParenthesis => true,
+        _ => false,
+    };
+
+    match tokens.split_first() {
+        Option::Some((Token::LeftParenthesis, rest_tokens)) => {
+            let (tokens_in_parens, _, tokens_after_parens) =
+                partition(rest_tokens, is_right_parenthesis)?;
+
+            build_expression(tokens_in_parens)
+                .filter(|(_, rest)| rest.len() == 0)
+                .map(|(node, _)| (node, tokens_after_parens))
+        }
+        _ => Option::None,
+    }
+}
+
+pub fn build_expression(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+    consume_math_operation(tokens)
+        .or_else(|| consume_parenthesis(tokens))
+        .or_else(|| consume_number_literal(tokens))
+        .or_else(|| consume_variable_identifier(tokens))
+}
+
+pub fn consume_assignemnt(tokens: &[Token]) -> Option<(StatementNode, &[Token])> {
+    if tokens.len() < 3 {
+        return Option::None;
+    }
+
+    match (&tokens[0], &tokens[1], &tokens[2..]) {
+        (Token::Identifier(identifier), Token::Assignment, tokens_after_assignment) => {
+            let (expression, rest) = build_expression(tokens_after_assignment)?;
+            let result_node = StatementNode::AssignmentNode {
+                identifier: identifier.clone(),
+                expression,
+            };
+
+            Option::Some((result_node, rest))
+        }
+        _ => Option::None,
+    }
+}
+
+pub fn build_statement(tokens: &[Token]) -> Option<(StatementNode, &[Token])> {
+    consume_assignemnt(tokens)
+}
+
+pub fn build(tokens: &[Token]) -> Option<(Node, &[Token])> {
+    build_statement(tokens)
+        .map(|(node, rest)| (Node::Statement(node), rest))
+        .or_else(|| build_expression(tokens).map(|(node, rest)| (Node::Expression(node), rest)))
+}
+
+pub fn run(tokens: &[Token]) -> Result<Vec<Node>, &str> {
+    let mut left_to_parse = tokens;
+    let mut nodes: Vec<Node> = Vec::new();
 
     loop {
-        let res = parser.parse(&parsing_input);
+        let res = build(left_to_parse);
         match res {
-            Option::Some((matched, rest)) => {
-                tokens.push(matched);
-                parsing_input = rest;
+            Option::Some((node, rest)) => {
+                left_to_parse = rest;
+                nodes.push(node);
             }
             Option::None => {
-                break if parsing_input.is_empty() {
-                    Result::Ok(tokens)
+                break if left_to_parse.len() == 0 {
+                    Result::Ok(nodes)
                 } else {
-                    Result::Err("Failed to parse input")
+                    println!("{:#?}", nodes);
+                    println!("{:#?}", left_to_parse);
+                    Result::Err("Failed to fully consume the tokens")
                 }
             }
-        };
+        }
     }
 }

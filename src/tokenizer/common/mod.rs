@@ -1,24 +1,24 @@
 use regex::Regex;
 
-use super::{Parser, ParsingResult};
+use super::{Tokenizer, TokenizerResult};
 use crate::utils;
 
-pub struct RegexParser<T> {
+pub struct RegexTokenizer<T> {
     re: Regex,
     result_formatter: Box<dyn Fn(String) -> T>,
 }
 
-impl<T> RegexParser<T> {
+impl<T> RegexTokenizer<T> {
     pub fn new(re_str: &str, result_formatter: Box<dyn Fn(String) -> T>) -> Self {
-        RegexParser {
+        RegexTokenizer {
             re: Regex::new(re_str).unwrap(),
             result_formatter,
         }
     }
 }
 
-impl<T> Parser<T> for RegexParser<T> {
-    fn parse(&self, input: &String) -> ParsingResult<T> {
+impl<T> Tokenizer<T> for RegexTokenizer<T> {
+    fn tokenize(&self, input: &String) -> TokenizerResult<T> {
         self.re
             .find(input)
             .map(|capture| utils::split_str_trim(input, capture.end()))
@@ -26,22 +26,22 @@ impl<T> Parser<T> for RegexParser<T> {
     }
 }
 
-pub struct CharParser<T> {
+pub struct CharTokenizer<T> {
     pub character: char,
     result_formatter: Box<dyn Fn(String) -> T>,
 }
 
-impl<T> CharParser<T> {
+impl<T> CharTokenizer<T> {
     pub fn new(character: char, result_formatter: Box<dyn Fn(String) -> T>) -> Self {
-        CharParser {
+        CharTokenizer {
             character,
             result_formatter,
         }
     }
 }
 
-impl<T> Parser<T> for CharParser<T> {
-    fn parse(&self, input: &String) -> ParsingResult<T> {
+impl<T> Tokenizer<T> for CharTokenizer<T> {
+    fn tokenize(&self, input: &String) -> TokenizerResult<T> {
         if input.starts_with(self.character) {
             Option::Some(utils::split_str_trim(input, 1))
                 .map(|(content, rest)| ((self.result_formatter)(content), rest))
