@@ -3,62 +3,64 @@ use crate::utils::partition;
 
 #[derive(Debug)]
 pub enum Node {
-    NumericalExpression(NumericalExpressionNode),
-    NumberLiteral(NumberLiteralNode),
+    Expression(ExpressionNode),
+    Statement(StatementNode),
 }
 
 #[derive(Debug)]
-pub struct NumericalExpressionNode {
-    node_a: Box<Node>,
-    op: String,
-    node_b: Box<Node>,
-}
-
-impl NumericalExpressionNode {
-    pub fn new(node_a: Node, node_b: Node, op: String) -> Self {
-        NumericalExpressionNode {
-            node_a: Box::new(node_a),
-            node_b: Box::new(node_b),
-            op: op.clone(),
-        }
-    }
+pub enum ExpressionNode {
+    NumericalExpression {
+        node_a: Box<ExpressionNode>,
+        op: String,
+        node_b: Box<ExpressionNode>,
+    },
+    NumberLiteral {
+        value: u32,
+    },
 }
 
 #[derive(Debug)]
-pub struct NumberLiteralNode {
-    value: u32,
+pub enum StatementNode {
+    AssignmentNode {
+        identifier: String,
+        expression: ExpressionNode,
+    },
 }
 
-fn consume_number_literal(tokens: &[Token]) -> Option<(Node, &[Token])> {
+fn consume_number_literal(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
     match tokens.split_first() {
         Option::Some((Token::NumberToken(number_str), rest)) => number_str
             .parse()
-            .map(|value| (Node::NumberLiteral(NumberLiteralNode { value }), rest))
+            .map(|value| (ExpressionNode::NumberLiteral { value }, rest))
             .ok(),
         _ => Option::None,
     }
 }
 
-pub fn build_expression(tokens: &[Token]) -> Option<(Node, &[Token])> {
-    consume_parenthesis(tokens).or_else(|| consume_number_literal(tokens))
-}
+pub fn consume_math_operation(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+    fn build_math_expression(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
+        consume_parenthesis(tokens).or_else(|| consume_number_literal(tokens))
+    }
 
-pub fn consume_math_operation(tokens: &[Token]) -> Option<(Node, &[Token])> {
-    let (node_a, rest_a) = build_expression(tokens)?;
+    let (node_a, rest_a) = build_math_expression(tokens)?;
     let (maybe_operator, rest_after_op) = rest_a.split_first()?;
 
     match maybe_operator {
         Token::OperatorToken(op) => {
-            let (node_b, rest_b) = build(rest_after_op)?;
-            let result_node = NumericalExpressionNode::new(node_a, node_b, op.to_string());
+            let (node_b, rest_b) = build_expression(rest_after_op)?;
+            let result_node = ExpressionNode::NumericalExpression {
+                node_a: Box::new(node_a),
+                node_b: Box::new(node_b),
+                op: op.clone(),
+            };
 
-            Option::Some((Node::NumericalExpression(result_node), rest_b))
+            Option::Some((result_node, rest_b))
         }
         _ => Option::None,
     }
 }
 
-pub fn consume_parenthesis(tokens: &[Token]) -> Option<(Node, &[Token])> {
+pub fn consume_parenthesis(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
     let is_right_parenthesis = |token: &Token| match token {
         Token::RightParenthesis => true,
         _ => false,
@@ -69,7 +71,7 @@ pub fn consume_parenthesis(tokens: &[Token]) -> Option<(Node, &[Token])> {
             let (tokens_in_parens, _, tokens_after_parens) =
                 partition(rest_tokens, is_right_parenthesis)?;
 
-            build(tokens_in_parens)
+            build_expression(tokens_in_parens)
                 .filter(|(_, rest)| rest.len() == 0)
                 .map(|(node, _)| (node, tokens_after_parens))
         }
@@ -77,10 +79,14 @@ pub fn consume_parenthesis(tokens: &[Token]) -> Option<(Node, &[Token])> {
     }
 }
 
-pub fn build(tokens: &[Token]) -> Option<(Node, &[Token])> {
+pub fn build_expression(tokens: &[Token]) -> Option<(ExpressionNode, &[Token])> {
     consume_math_operation(tokens)
         .or_else(|| consume_parenthesis(tokens))
         .or_else(|| consume_number_literal(tokens))
+}
+
+pub fn build(tokens: &[Token]) -> Option<(Node, &[Token])> {
+    build_expression(tokens).map(|(node, rest)| (Node::Expression(node), rest))
 }
 
 pub fn run(tokens: &[Token]) -> Result<Vec<Node>, &str> {
