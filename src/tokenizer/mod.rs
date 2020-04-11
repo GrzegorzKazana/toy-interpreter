@@ -1,12 +1,13 @@
 mod combined_tokenizer;
 mod common;
+mod tests;
 
 use combined_tokenizer::CombinedTokenizer;
 
 type SourceRest = String;
 type TokenizerResult<T> = Option<(T, SourceRest)>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Token {
     NumberToken(String),
     OperatorToken(String),
