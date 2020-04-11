@@ -1,8 +1,11 @@
-use crate::tokenizer::Token;
-
+#[allow(unused_imports)]
 use super::expressions::ExpressionNode;
+#[allow(unused_imports)]
 use super::statement::StatementNode;
+#[allow(unused_imports)]
 use super::{run, Node};
+#[allow(unused_imports)]
+use crate::tokenizer::Token;
 
 #[test]
 fn it_detects_simple_expressions() {
