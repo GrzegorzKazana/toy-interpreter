@@ -1,6 +1,6 @@
 use crate::tokenizer::Token;
 
-use super::expression::{build_expression, ExpressionNode};
+use super::expressions::{build_expression, ExpressionNode};
 use super::ParsingResult;
 
 #[derive(Debug)]

@@ -14,6 +14,7 @@ pub enum Token {
     RightParenthesis,
     Identifier(String),
     Assignment,
+    Comma,
 }
 
 pub trait Tokenizer<T> {

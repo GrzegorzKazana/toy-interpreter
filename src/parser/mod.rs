@@ -1,8 +1,8 @@
-mod expression;
+mod expressions;
 mod statement;
 
 use crate::tokenizer::Token;
-use expression::{build_expression, ExpressionNode};
+use expressions::{build_expression, ExpressionNode};
 use statement::{build_statement, StatementNode};
 
 #[derive(Debug)]

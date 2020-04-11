@@ -4,10 +4,10 @@ mod utils;
 
 fn main() {
     // let input = "(2) + 2";
-    let input = "1+((2+3)+4)";
-    // let input = "a = 1 + 1
-    //              b = 2
-    //              c = a + b";
+    // let input = "1+2+3";
+    let input = "a = 1 + 1
+                 b = 5 + asd() + 3
+                 c = a + b";
 
     match tokenizer::run(input) {
         Result::Ok(tokens) => {

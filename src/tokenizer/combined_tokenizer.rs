@@ -13,6 +13,7 @@ impl CombinedTokenizer {
         let right_paren_tokenizer = CharTokenizer::new(')', Box::new(|_| Token::RightParenthesis));
         let identifier_tokenizer = RegexTokenizer::new(r"^\w+", Box::new(Token::Identifier));
         let assignment_tokenizer = CharTokenizer::new('=', Box::new(|_| Token::Assignment));
+        let comma_tokenizer = CharTokenizer::new(',', Box::new(|_| Token::Comma));
 
         CombinedTokenizer {
             tokenizers: vec![
@@ -22,6 +23,7 @@ impl CombinedTokenizer {
                 Box::new(right_paren_tokenizer),
                 Box::new(identifier_tokenizer),
                 Box::new(assignment_tokenizer),
+                Box::new(comma_tokenizer),
             ],
         }
     }
