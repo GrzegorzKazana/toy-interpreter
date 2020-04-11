@@ -1,11 +1,12 @@
 mod expressions;
 mod statement;
+mod tests;
 
 use crate::tokenizer::Token;
 use expressions::{build_expression, ExpressionNode};
 use statement::{build_statement, StatementNode};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Node {
     Expression(ExpressionNode),
     Statement(StatementNode),

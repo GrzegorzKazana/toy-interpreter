@@ -13,7 +13,7 @@ use literal::consume_number_literal;
 use math_expression::consume_math_operation;
 use parenthesis::consume_parenthesis;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ExpressionNode {
     NumericalExpression {
         node_a: Box<ExpressionNode>,

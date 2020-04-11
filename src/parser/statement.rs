@@ -3,7 +3,7 @@ use crate::tokenizer::Token;
 use super::expressions::{build_expression, ExpressionNode};
 use super::ParsingResult;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum StatementNode {
     AssignmentNode {
         identifier: String,
