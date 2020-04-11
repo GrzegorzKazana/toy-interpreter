@@ -8,7 +8,7 @@ pub struct CombinedTokenizer {
 impl CombinedTokenizer {
     pub fn new() -> Self {
         let number_tokenizer = RegexTokenizer::new(r"^(\d+)", Box::new(Token::NumberToken));
-        let opeartor_tokenizer = RegexTokenizer::new(r"^(\+|-)", Box::new(Token::OperatorToken));
+        let opeartor_tokenizer = RegexTokenizer::new(r"^(\+|-|\*)", Box::new(Token::OperatorToken));
         let left_paren_tokenizer = CharTokenizer::new('(', Box::new(|_| Token::LeftParenthesis));
         let right_paren_tokenizer = CharTokenizer::new(')', Box::new(|_| Token::RightParenthesis));
         let identifier_tokenizer = RegexTokenizer::new(r"^\w+", Box::new(Token::Identifier));

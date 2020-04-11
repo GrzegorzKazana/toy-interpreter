@@ -1,57 +1,45 @@
-use super::{
-    build_expression, consume_function_call, consume_number_literal, consume_parenthesis,
-    consume_variable_identifier, ExpressionNode, ExpressionParsingResult,
-};
+use super::{build_simple_math_expression, ExpressionNode, ExpressionParsingResult};
 use crate::tokenizer::Token;
 
-pub fn consume_math_operation(tokens: &[Token]) -> ExpressionParsingResult {
-    fn build_math_expression(tokens: &[Token]) -> ExpressionParsingResult {
-        consume_function_call(tokens)
-            .or_else(|| consume_parenthesis(tokens))
-            .or_else(|| consume_number_literal(tokens))
-            .or_else(|| consume_variable_identifier(tokens))
-    }
+/**
+ * Will only consume math operations as long as right operand
+ * is an expression with an operand with higher priority.
+ * E.g. will consume "1+2*3", but will not "1*2+3".
+ */
+pub fn consume_math_operation(
+    tokens: &[Token],
+    maybe_minimal_priority: Option<usize>,
+) -> ExpressionParsingResult {
+    let minimal_priority = maybe_minimal_priority.unwrap_or(1);
+    let (operand, operand_rest) = build_simple_math_expression(tokens)?;
 
-    let (node_a, rest_a) = build_math_expression(tokens)?;
-    let (maybe_operator, rest_after_op) = rest_a.split_first()?;
+    match operand_rest.split_first() {
+        Option::None => Option::Some((operand, operand_rest)),
+        Option::Some((Token::OperatorToken(op), operator_rest)) => {
+            let priority = operator_to_priority(op);
 
-    match maybe_operator {
-        Token::OperatorToken(op) => {
-            let (node_b, rest_b) = build_expression(rest_after_op)?;
-            let result_node = ExpressionNode::NumericalExpression {
-                node_a: Box::new(node_a),
-                node_b: Box::new(node_b),
-                op: op.clone(),
-            };
+            if operator_to_priority(op) >= minimal_priority {
+                let (operand_b, operand_b_rest) =
+                    consume_math_operation(operator_rest, Option::Some(priority + 1))?;
+                let result_node = ExpressionNode::NumericalExpression {
+                    node_a: Box::new(operand),
+                    node_b: Box::new(operand_b),
+                    op: op.clone(),
+                };
 
-            Option::Some((result_node, rest_b))
+                Option::Some((result_node, operand_b_rest))
+            } else {
+                Option::Some((operand, operand_rest))
+            }
         }
         _ => Option::None,
     }
 }
 
-// pub fn consume_math_operation_(tokens: &[Token]) -> ExpressionParsingResult {
-//     fn build_math_expression(tokens: &[Token]) -> ExpressionParsingResult {
-//         consume_function_call(tokens)
-//             .or_else(|| consume_parenthesis(tokens))
-//             .or_else(|| consume_number_literal(tokens))
-//             .or_else(|| consume_variable_identifier(tokens))
-//     }
-
-//     let (node_a, rest_a) = build_math_expression(tokens)?;
-//     let (maybe_operator, rest_after_op) = rest_a.split_first()?;
-
-//     match maybe_operator {
-//         Token::OperatorToken(op) => {
-//             let (node_b, rest_b) = build_expression(rest_after_op)?;
-//             let result_node = ExpressionNode::NumericalExpression {
-//                 node_a: Box::new(node_a),
-//                 node_b: Box::new(node_b),
-//                 op: op.clone(),
-//             };
-
-//             Option::Some((result_node, rest_b))
-//         }
-//         _ => Option::None,
-//     }
-// }
+fn operator_to_priority(op: &str) -> usize {
+    match op {
+        "+" | "-" => 1,
+        "*" | "/" => 2,
+        _ => 0,
+    }
+}
