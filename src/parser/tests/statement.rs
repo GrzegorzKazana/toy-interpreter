@@ -61,12 +61,12 @@ fn it_detects_function_declaration() {
                     })),
                 }),
                 arguments: vec![
-                    ExpressionNode::Variable(Variable {
+                    Variable {
                         identifier: String::from("a"),
-                    }),
-                    ExpressionNode::Variable(Variable {
+                    },
+                    Variable {
                         identifier: String::from("b"),
-                    }),
+                    },
                 ],
             },
         ))],

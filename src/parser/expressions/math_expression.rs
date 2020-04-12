@@ -1,7 +1,7 @@
 use super::{build_simple_math_expression, ExpressionNode, ExpressionParsingResult};
 use crate::tokenizer::{Operator, Token};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct NumericalExpression {
     pub node_a: Box<ExpressionNode>,
     pub op: Operator,

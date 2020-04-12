@@ -1,7 +1,7 @@
 use super::{build_expression, ExpressionNode, ExpressionParsingResult, ParsingResult};
 use crate::tokenizer::Token;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct FunctionCall {
     pub identifier: String,
     pub arguments: Vec<ExpressionNode>,

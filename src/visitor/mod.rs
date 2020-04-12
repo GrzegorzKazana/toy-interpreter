@@ -22,7 +22,7 @@ pub trait Visitor {
         }
     }
 
-    fn visit_expression(&self, node: &ExpressionNode) -> Option<isize> {
+    fn visit_expression(&mut self, node: &ExpressionNode) -> Option<isize> {
         match node {
             ExpressionNode::Variable(node) => self.visit_var(node),
             ExpressionNode::NumberLiteral(node) => self.visit_num(node),
@@ -31,7 +31,7 @@ pub trait Visitor {
         }
     }
 
-    fn visit_math_expr(&self, node: &NumericalExpression) -> Option<isize> {
+    fn visit_math_expr(&mut self, node: &NumericalExpression) -> Option<isize> {
         let val_a = self.visit_expression(&*node.node_a)?;
         let val_b = self.visit_expression(&*node.node_b)?;
 
@@ -55,6 +55,6 @@ pub trait Visitor {
 
     fn visit_var(&self, node: &Variable) -> Option<isize>;
     fn visit_fn_declaration(&mut self, node: &FunctionDeclaration) -> Option<isize>;
-    fn visit_fn_call(&self, node: &FunctionCall) -> Option<isize>;
+    fn visit_fn_call(&mut self, node: &FunctionCall) -> Option<isize>;
     fn visit_assignment(&mut self, node: &Assignment) -> Option<isize>;
 }

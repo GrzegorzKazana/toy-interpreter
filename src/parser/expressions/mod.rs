@@ -9,7 +9,8 @@ use crate::tokenizer::Token;
 
 use function::consume_function_call;
 pub use function::FunctionCall;
-pub use identifier::consume_variable_identifier;
+use identifier::consume_variable_identifier;
+pub use identifier::consume_variable_identifier_helper;
 pub use identifier::Variable;
 use literal::consume_number_literal;
 pub use literal::NumberLiteral;
@@ -17,7 +18,7 @@ use math_expression::consume_math_expression;
 pub use math_expression::NumericalExpression;
 use parenthesis::consume_parenthesis;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum ExpressionNode {
     NumericalExpression(NumericalExpression),
     NumberLiteral(NumberLiteral),

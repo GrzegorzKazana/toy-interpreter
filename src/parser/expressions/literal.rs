@@ -1,7 +1,7 @@
 use super::{ExpressionNode, ExpressionParsingResult};
 use crate::tokenizer::Token;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct NumberLiteral {
     pub value: isize,
 }

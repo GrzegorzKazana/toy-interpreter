@@ -12,13 +12,13 @@ impl Visitor for MockVisitor {
     fn visit_var(&self, _: &Variable) -> Option<isize> {
         Option::None
     }
-    fn visit_fn_call(&self, _: &FunctionCall) -> Option<isize> {
+    fn visit_fn_call(&mut self, _: &FunctionCall) -> Option<isize> {
         Option::None
     }
     fn visit_assignment(&mut self, _: &Assignment) -> Option<isize> {
         Option::None
     }
-    fn visit_fn_declaration(&mut self, node: &FunctionDeclaration) -> Option<isize> {
+    fn visit_fn_declaration(&mut self, _: &FunctionDeclaration) -> Option<isize> {
         Option::None
     }
 }
@@ -37,7 +37,7 @@ fn it_visits_number_literals() {
 
 #[test]
 fn it_visits_simple_math_expression() {
-    let visitor = MockVisitor {};
+    let mut visitor = MockVisitor {};
     let math_expr = NumericalExpression {
         op: Operator::Add,
         node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
@@ -53,7 +53,7 @@ fn it_visits_simple_math_expression() {
 
 #[test]
 fn it_visits_nested_math_expression() {
-    let visitor = MockVisitor {};
+    let mut visitor = MockVisitor {};
     let math_expr = NumericalExpression {
         op: Operator::Add,
         node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),

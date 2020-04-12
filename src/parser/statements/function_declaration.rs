@@ -1,11 +1,13 @@
-use super::super::expressions::{build_expression, consume_variable_identifier, ExpressionNode};
+use super::super::expressions::{
+    build_expression, consume_variable_identifier_helper, ExpressionNode, Variable,
+};
 use super::{ParsingResult, StatementNode, StatementParsingResult};
 use crate::tokenizer::Token;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct FunctionDeclaration {
     pub identifier: String,
-    pub arguments: Vec<ExpressionNode>,
+    pub arguments: Vec<Variable>,
     pub expression: ExpressionNode,
 }
 
@@ -37,12 +39,12 @@ pub fn consume_function_declaration(tokens: &[Token]) -> StatementParsingResult 
     }
 }
 
-fn consume_arguments(tokens: &[Token]) -> ParsingResult<Vec<ExpressionNode>> {
+fn consume_arguments(tokens: &[Token]) -> ParsingResult<Vec<Variable>> {
     let (head, rest) = tokens.split_first()?;
     if !matches!(head, Token::LeftParenthesis) {
         return Option::None;
     }
-    let mut args: Vec<ExpressionNode> = Vec::new();
+    let mut args: Vec<Variable> = Vec::new();
     let mut rest_tokens = rest;
 
     loop {
@@ -55,7 +57,7 @@ fn consume_arguments(tokens: &[Token]) -> ParsingResult<Vec<ExpressionNode>> {
                 continue;
             }
             _ => {
-                let (arg, arg_rest) = consume_variable_identifier(rest_tokens)?;
+                let (arg, arg_rest) = consume_variable_identifier_helper(rest_tokens)?;
                 args.push(arg);
                 rest_tokens = arg_rest;
             }
