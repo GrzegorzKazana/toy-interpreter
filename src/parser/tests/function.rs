@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-use crate::parser::expressions::ExpressionNode;
+use crate::parser::expressions::*;
 #[allow(unused_imports)]
 use crate::parser::{run, Node};
 #[allow(unused_imports)]
@@ -14,10 +14,14 @@ fn it_detects_function_call() {
         Token::RightParenthesis,
     ];
 
-    let expected_result = vec![Node::Expression(ExpressionNode::FunctionCall {
-        identifier: String::from("id"),
-        arguments: vec![],
-    })];
+    let expected_result = Node::Program {
+        body: vec![Node::Expression(ExpressionNode::FunctionCall(
+            FunctionCall {
+                identifier: String::from("id"),
+                arguments: vec![],
+            },
+        ))],
+    };
 
     let parsing_result = run(&input).unwrap();
 
@@ -42,20 +46,24 @@ fn it_detects_function_call_with_arguments() {
         Token::RightParenthesis,
     ];
 
-    let expected_result = vec![Node::Expression(ExpressionNode::FunctionCall {
-        identifier: String::from("id"),
-        arguments: vec![
-            ExpressionNode::NumberLiteral { value: 42 },
-            ExpressionNode::NumericalExpression {
-                node_a: Box::new(ExpressionNode::NumberLiteral { value: 1 }),
-                node_b: Box::new(ExpressionNode::NumberLiteral { value: 2 }),
-                op: Operator::Add,
+    let expected_result = Node::Program {
+        body: vec![Node::Expression(ExpressionNode::FunctionCall(
+            FunctionCall {
+                identifier: String::from("id"),
+                arguments: vec![
+                    ExpressionNode::NumberLiteral(NumberLiteral { value: 42 }),
+                    ExpressionNode::NumericalExpression(NumericalExpression {
+                        node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+                        node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
+                        op: Operator::Add,
+                    }),
+                    ExpressionNode::Variable(Variable {
+                        identifier: String::from("a"),
+                    }),
+                ],
             },
-            ExpressionNode::Variable {
-                identifier: String::from("a"),
-            },
-        ],
-    })];
+        ))],
+    };
 
     let parsing_result = run(&input).unwrap();
 

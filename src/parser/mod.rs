@@ -3,13 +3,19 @@ mod statement;
 mod tests;
 
 use crate::tokenizer::Token;
-use expressions::{build_expression, ExpressionNode};
-use statement::{build_statement, StatementNode};
+use expressions::build_expression;
+pub use expressions::ExpressionNode;
+use statement::build_statement;
+pub use statement::StatementNode;
+
 
 #[derive(Debug, PartialEq)]
 pub enum Node {
     Expression(ExpressionNode),
     Statement(StatementNode),
+    Program {
+        body: Vec<Node>,
+    }
 }
 
 pub type ParsingResult<'a, T> = Option<(T, &'a [Token])>;
@@ -20,7 +26,7 @@ pub fn build(tokens: &[Token]) -> ParsingResult<Node> {
         .or_else(|| build_expression(tokens).map(|(node, rest)| (Node::Expression(node), rest)))
 }
 
-pub fn run(tokens: &[Token]) -> Result<Vec<Node>, &str> {
+pub fn run(tokens: &[Token]) -> Result<Node, &str> {
     let mut left_to_parse = tokens;
     let mut nodes: Vec<Node> = Vec::new();
 
@@ -33,7 +39,9 @@ pub fn run(tokens: &[Token]) -> Result<Vec<Node>, &str> {
             }
             Option::None => {
                 break if left_to_parse.len() == 0 {
-                    Result::Ok(nodes)
+                    Result::Ok(Node::Program {
+                        body: nodes
+                    })
                 } else {
                     println!("{:#?}", nodes);
                     println!("{:#?}", left_to_parse);

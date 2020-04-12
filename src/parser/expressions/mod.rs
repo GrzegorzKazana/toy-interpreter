@@ -5,31 +5,24 @@ mod math_expression;
 mod parenthesis;
 
 use super::ParsingResult;
-use crate::tokenizer::{Operator, Token};
+use crate::tokenizer::Token;
 
 use function::consume_function_call;
+pub use function::FunctionCall;
 use identifier::consume_variable_identifier;
+pub use identifier::Variable;
 use literal::consume_number_literal;
+pub use literal::NumberLiteral;
 use math_expression::consume_math_expression;
+pub use math_expression::NumericalExpression;
 use parenthesis::consume_parenthesis;
 
 #[derive(Debug, PartialEq)]
 pub enum ExpressionNode {
-    NumericalExpression {
-        node_a: Box<ExpressionNode>,
-        op: Operator,
-        node_b: Box<ExpressionNode>,
-    },
-    NumberLiteral {
-        value: u32,
-    },
-    Variable {
-        identifier: String,
-    },
-    FunctionCall {
-        identifier: String,
-        arguments: Vec<ExpressionNode>,
-    },
+    NumericalExpression(NumericalExpression),
+    NumberLiteral(NumberLiteral),
+    Variable(Variable),
+    FunctionCall(FunctionCall),
 }
 
 type ExpressionParsingResult<'a> = ParsingResult<'a, ExpressionNode>;

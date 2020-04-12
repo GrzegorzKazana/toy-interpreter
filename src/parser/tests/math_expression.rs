@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-use crate::parser::expressions::ExpressionNode;
+use crate::parser::expressions::*;
 #[allow(unused_imports)]
 use crate::parser::{run, Node};
 #[allow(unused_imports)]
@@ -16,15 +16,19 @@ fn it_detects_simple_expressions() {
         Token::NumberToken(String::from("3")),
     ];
 
-    let expected_result = vec![Node::Expression(ExpressionNode::NumericalExpression {
-        op: Operator::Add,
-        node_a: Box::new(ExpressionNode::NumericalExpression {
-            op: Operator::Add,
-            node_a: Box::new(ExpressionNode::NumberLiteral { value: 1 }),
-            node_b: Box::new(ExpressionNode::NumberLiteral { value: 2 }),
-        }),
-        node_b: Box::new(ExpressionNode::NumberLiteral { value: 3 }),
-    })];
+    let expected_result = Node::Program {
+        body: vec![Node::Expression(ExpressionNode::NumericalExpression(
+            NumericalExpression {
+                op: Operator::Add,
+                node_a: Box::new(ExpressionNode::NumericalExpression(NumericalExpression {
+                    op: Operator::Add,
+                    node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+                    node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
+                })),
+                node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 3 })),
+            },
+        ))],
+    };
 
     let parsing_result = run(&input).unwrap();
 
@@ -44,15 +48,19 @@ fn it_detects_expressions_with_parenthesis() {
         Token::RightParenthesis,
     ];
 
-    let expected_result = vec![Node::Expression(ExpressionNode::NumericalExpression {
-        op: Operator::Add,
-        node_a: Box::new(ExpressionNode::NumberLiteral { value: 1 }),
-        node_b: Box::new(ExpressionNode::NumericalExpression {
-            op: Operator::Add,
-            node_a: Box::new(ExpressionNode::NumberLiteral { value: 2 }),
-            node_b: Box::new(ExpressionNode::NumberLiteral { value: 3 }),
-        }),
-    })];
+    let expected_result = Node::Program {
+        body: vec![Node::Expression(ExpressionNode::NumericalExpression(
+            NumericalExpression {
+                op: Operator::Add,
+                node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+                node_b: Box::new(ExpressionNode::NumericalExpression(NumericalExpression {
+                    op: Operator::Add,
+                    node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
+                    node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 3 })),
+                })),
+            },
+        ))],
+    };
 
     let parsing_result = run(&input).unwrap();
 
@@ -70,15 +78,19 @@ fn it_respects_operator_priority_1() {
         Token::NumberToken(String::from("3")),
     ];
 
-    let expected_result = vec![Node::Expression(ExpressionNode::NumericalExpression {
-        op: Operator::Add,
-        node_a: Box::new(ExpressionNode::NumberLiteral { value: 1 }),
-        node_b: Box::new(ExpressionNode::NumericalExpression {
-            op: Operator::Multiply,
-            node_a: Box::new(ExpressionNode::NumberLiteral { value: 2 }),
-            node_b: Box::new(ExpressionNode::NumberLiteral { value: 3 }),
-        }),
-    })];
+    let expected_result = Node::Program {
+        body: vec![Node::Expression(ExpressionNode::NumericalExpression(
+            NumericalExpression {
+                op: Operator::Add,
+                node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+                node_b: Box::new(ExpressionNode::NumericalExpression(NumericalExpression {
+                    op: Operator::Multiply,
+                    node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
+                    node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 3 })),
+                })),
+            },
+        ))],
+    };
 
     let parsing_result = run(&input).unwrap();
 
@@ -96,15 +108,19 @@ fn it_respects_operator_priority_2() {
         Token::NumberToken(String::from("3")),
     ];
 
-    let expected_result = vec![Node::Expression(ExpressionNode::NumericalExpression {
-        op: Operator::Add,
-        node_a: Box::new(ExpressionNode::NumericalExpression {
-            op: Operator::Multiply,
-            node_a: Box::new(ExpressionNode::NumberLiteral { value: 1 }),
-            node_b: Box::new(ExpressionNode::NumberLiteral { value: 2 }),
-        }),
-        node_b: Box::new(ExpressionNode::NumberLiteral { value: 3 }),
-    })];
+    let expected_result = Node::Program {
+        body: vec![Node::Expression(ExpressionNode::NumericalExpression(
+            NumericalExpression {
+                op: Operator::Add,
+                node_a: Box::new(ExpressionNode::NumericalExpression(NumericalExpression {
+                    op: Operator::Multiply,
+                    node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+                    node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
+                })),
+                node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 3 })),
+            },
+        ))],
+    };
 
     let parsing_result = run(&input).unwrap();
 
@@ -124,19 +140,23 @@ fn it_respects_operator_priority_3() {
         Token::NumberToken(String::from("4")),
     ];
 
-    let expected_result = vec![Node::Expression(ExpressionNode::NumericalExpression {
-        op: Operator::Add,
-        node_a: Box::new(ExpressionNode::NumberLiteral { value: 1 }),
-        node_b: Box::new(ExpressionNode::NumericalExpression {
-            op: Operator::Multiply,
-            node_a: Box::new(ExpressionNode::NumericalExpression {
-                op: Operator::Multiply,
-                node_a: Box::new(ExpressionNode::NumberLiteral { value: 2 }),
-                node_b: Box::new(ExpressionNode::NumberLiteral { value: 3 }),
-            }),
-            node_b: Box::new(ExpressionNode::NumberLiteral { value: 4 }),
-        }),
-    })];
+    let expected_result = Node::Program {
+        body: vec![Node::Expression(ExpressionNode::NumericalExpression(
+            NumericalExpression {
+                op: Operator::Add,
+                node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+                node_b: Box::new(ExpressionNode::NumericalExpression(NumericalExpression {
+                    op: Operator::Multiply,
+                    node_a: Box::new(ExpressionNode::NumericalExpression(NumericalExpression {
+                        op: Operator::Multiply,
+                        node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
+                        node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 3 })),
+                    })),
+                    node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 4 })),
+                })),
+            },
+        ))],
+    };
 
     let parsing_result = run(&input).unwrap();
 
