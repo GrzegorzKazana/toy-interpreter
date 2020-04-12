@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use crate::parser::expressions::*;
 #[allow(unused_imports)]
-use crate::parser::statement::*;
+use crate::parser::statements::*;
 #[allow(unused_imports)]
 use crate::parser::{run, Node, Program};
 #[allow(unused_imports)]

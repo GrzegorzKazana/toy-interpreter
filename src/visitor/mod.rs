@@ -1,12 +1,12 @@
 mod tests;
 
 use crate::parser::expressions::*;
-use crate::parser::statement::*;
+use crate::parser::statements::*;
 use crate::parser::{Node, Program};
 use crate::tokenizer::Operator;
 
 pub trait Visitor {
-    fn visit(&self, program: &Program) {
+    fn visit(&mut self, program: &Program) {
         program.body.iter().for_each(|node| match node {
             Node::Statement(statement) => self.visit_statement(statement),
             Node::Expression(expression) => {
@@ -15,7 +15,7 @@ pub trait Visitor {
         })
     }
 
-    fn visit_statement(&self, node: &StatementNode) {
+    fn visit_statement(&mut self, node: &StatementNode) {
         match node {
             StatementNode::AssignmentNode(node) => self.visit_assignment(node),
         }
@@ -54,5 +54,5 @@ pub trait Visitor {
 
     fn visit_var(&self, node: &Variable) -> Option<usize>;
     fn visit_fn_call(&self, node: &FunctionCall) -> Option<usize>;
-    fn visit_assignment(&self, node: &AssignmentNode);
+    fn visit_assignment(&mut self, node: &AssignmentNode);
 }

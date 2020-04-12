@@ -1,7 +1,7 @@
 use super::Visitor;
 #[allow(unused_imports)]
 use crate::parser::expressions::{FunctionCall, NumberLiteral, NumericalExpression, Variable};
-use crate::parser::statement::AssignmentNode;
+use crate::parser::statements::AssignmentNode;
 #[allow(unused_imports)]
 use crate::parser::ExpressionNode;
 #[allow(unused_imports)]
@@ -15,7 +15,7 @@ impl Visitor for MockVisitor {
     fn visit_fn_call(&self, _: &FunctionCall) -> Option<usize> {
         Option::None
     }
-    fn visit_assignment(&self, _: &AssignmentNode) {}
+    fn visit_assignment(&mut self, _: &AssignmentNode) {}
 }
 
 #[test]

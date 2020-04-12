@@ -1,3 +1,4 @@
+mod interpreter;
 mod parser;
 mod tokenizer;
 mod utils;

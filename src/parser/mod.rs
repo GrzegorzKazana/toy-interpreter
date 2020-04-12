@@ -1,12 +1,12 @@
 pub mod expressions;
-pub mod statement;
+pub mod statements;
 mod tests;
 
 use crate::tokenizer::Token;
 use expressions::build_expression;
 pub use expressions::ExpressionNode;
-use statement::build_statement;
-pub use statement::StatementNode;
+use statements::build_statement;
+pub use statements::StatementNode;
 
 #[derive(Debug, PartialEq)]
 pub enum Node {
