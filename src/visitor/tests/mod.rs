@@ -15,7 +15,9 @@ impl Visitor for MockVisitor {
     fn visit_fn_call(&self, _: &FunctionCall) -> Option<usize> {
         Option::None
     }
-    fn visit_assignment(&mut self, _: &AssignmentNode) {}
+    fn visit_assignment(&mut self, _: &AssignmentNode) -> Option<usize> {
+        Option::None
+    }
 }
 
 #[test]
