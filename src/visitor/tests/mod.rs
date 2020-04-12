@@ -1,4 +1,4 @@
-use super::Visitor;
+use super::{Context, Visitor};
 #[allow(unused_imports)]
 use crate::parser::expressions::{FunctionCall, NumberLiteral, NumericalExpression, Variable};
 use crate::parser::statements::{Assignment, FunctionDeclaration};
@@ -9,10 +9,10 @@ use crate::tokenizer::Operator;
 
 struct MockVisitor {}
 impl Visitor for MockVisitor {
-    fn visit_var(&self, _: &Variable) -> Option<isize> {
+    fn visit_var(&self, _: &Variable, _: Context) -> Option<isize> {
         Option::None
     }
-    fn visit_fn_call(&mut self, _: &FunctionCall) -> Option<isize> {
+    fn visit_fn_call(&self, _: &FunctionCall, _: Context) -> Option<isize> {
         Option::None
     }
     fn visit_assignment(&mut self, _: &Assignment) -> Option<isize> {
@@ -46,7 +46,7 @@ fn it_visits_simple_math_expression() {
 
     let exprected_result = Option::Some(5);
 
-    let result = visitor.visit_math_expr(&math_expr);
+    let result = visitor.visit_math_expr(&math_expr, Option::None);
 
     assert_eq!(result, exprected_result);
 }
@@ -66,7 +66,7 @@ fn it_visits_nested_math_expression() {
 
     let exprected_result = Option::Some(14);
 
-    let result = visitor.visit_math_expr(&math_expr);
+    let result = visitor.visit_math_expr(&math_expr, Option::None);
 
     assert_eq!(result, exprected_result);
 }

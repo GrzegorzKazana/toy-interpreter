@@ -29,7 +29,7 @@ fn it_stores_and_retirves_variables() {
     let expected_result = Option::Some(3);
 
     mock_interpreter.visit_assignment(&assignment);
-    let result = mock_interpreter.visit_var(&retrived_variable);
+    let result = mock_interpreter.visit_var(&retrived_variable, Option::None);
 
     assert_eq!(result, expected_result);
 }
@@ -68,7 +68,7 @@ fn it_accepts_declared_function_and_handles_call() {
     let expected_result = Option::Some(3);
 
     mock_interpreter.visit_fn_declaration(&declaration);
-    let result = mock_interpreter.visit_fn_call(&call);
+    let result = mock_interpreter.visit_fn_call(&call, Option::None);
 
     assert_eq!(result, expected_result);
 }
