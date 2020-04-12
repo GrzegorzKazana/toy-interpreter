@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use crate::parser::expressions::*;
 #[allow(unused_imports)]
-use crate::parser::{run, Node};
+use crate::parser::{run, Node, Program};
 #[allow(unused_imports)]
 use crate::tokenizer::{Operator, Token};
 
@@ -14,7 +14,7 @@ fn it_detects_function_call() {
         Token::RightParenthesis,
     ];
 
-    let expected_result = Node::Program {
+    let expected_result = Program {
         body: vec![Node::Expression(ExpressionNode::FunctionCall(
             FunctionCall {
                 identifier: String::from("id"),
@@ -46,7 +46,7 @@ fn it_detects_function_call_with_arguments() {
         Token::RightParenthesis,
     ];
 
-    let expected_result = Node::Program {
+    let expected_result = Program {
         body: vec![Node::Expression(ExpressionNode::FunctionCall(
             FunctionCall {
                 identifier: String::from("id"),

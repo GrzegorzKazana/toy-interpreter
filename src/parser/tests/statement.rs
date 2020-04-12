@@ -3,7 +3,7 @@ use crate::parser::expressions::*;
 #[allow(unused_imports)]
 use crate::parser::statement::*;
 #[allow(unused_imports)]
-use crate::parser::{run, Node};
+use crate::parser::{run, Node, Program};
 #[allow(unused_imports)]
 use crate::tokenizer::Token;
 
@@ -16,7 +16,7 @@ fn it_detects_simple_assignment() {
         Token::NumberToken(String::from("42")),
     ];
 
-    let expected_result = Node::Program {
+    let expected_result = Program {
         body: vec![Node::Statement(StatementNode::AssignmentNode(
             AssignmentNode {
                 identifier: String::from("id"),
