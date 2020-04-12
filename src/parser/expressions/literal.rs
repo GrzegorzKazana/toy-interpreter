@@ -3,7 +3,7 @@ use crate::tokenizer::Token;
 
 #[derive(Debug, PartialEq)]
 pub struct NumberLiteral {
-    pub value: usize,
+    pub value: isize,
 }
 
 pub fn consume_number_literal(tokens: &[Token]) -> ExpressionParsingResult {

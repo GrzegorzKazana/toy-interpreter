@@ -10,7 +10,7 @@ use crate::tokenizer::InputTokenizer;
 use crate::visitor::Visitor;
 
 pub struct Interpreter {
-    variables: HashMap<String, usize>,
+    variables: HashMap<String, isize>,
     command_line: CommandLine,
     tokenizer: InputTokenizer,
     parser: Parser,
@@ -49,15 +49,15 @@ impl Interpreter {
 }
 
 impl Visitor for Interpreter {
-    fn visit_var(&self, node: &Variable) -> Option<usize> {
+    fn visit_var(&self, node: &Variable) -> Option<isize> {
         self.variables.get(&node.identifier).map(|v| v.clone())
     }
 
-    fn visit_fn_call(&self, _node: &FunctionCall) -> Option<usize> {
+    fn visit_fn_call(&self, _node: &FunctionCall) -> Option<isize> {
         Option::None
     }
 
-    fn visit_assignment(&mut self, node: &AssignmentNode) -> Option<usize> {
+    fn visit_assignment(&mut self, node: &AssignmentNode) -> Option<isize> {
         let maybe_value = self.visit_expression(&node.expression);
 
         match maybe_value {

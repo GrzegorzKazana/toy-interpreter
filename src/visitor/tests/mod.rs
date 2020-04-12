@@ -9,13 +9,13 @@ use crate::tokenizer::Operator;
 
 struct MockVisitor {}
 impl Visitor for MockVisitor {
-    fn visit_var(&self, _: &Variable) -> Option<usize> {
+    fn visit_var(&self, _: &Variable) -> Option<isize> {
         Option::None
     }
-    fn visit_fn_call(&self, _: &FunctionCall) -> Option<usize> {
+    fn visit_fn_call(&self, _: &FunctionCall) -> Option<isize> {
         Option::None
     }
-    fn visit_assignment(&mut self, _: &AssignmentNode) -> Option<usize> {
+    fn visit_assignment(&mut self, _: &AssignmentNode) -> Option<isize> {
         Option::None
     }
 }
