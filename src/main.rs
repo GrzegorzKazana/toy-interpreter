@@ -1,6 +1,7 @@
 mod parser;
 mod tokenizer;
 mod utils;
+mod visitor;
 
 fn main() {
     // let input = "(2) + 2";

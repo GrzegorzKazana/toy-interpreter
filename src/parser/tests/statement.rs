@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use crate::parser::expressions::*;
 #[allow(unused_imports)]
-use crate::parser::statement::StatementNode;
+use crate::parser::statement::*;
 #[allow(unused_imports)]
 use crate::parser::{run, Node};
 #[allow(unused_imports)]
@@ -17,10 +17,12 @@ fn it_detects_simple_assignment() {
     ];
 
     let expected_result = Node::Program {
-        body: vec![Node::Statement(StatementNode::AssignmentNode {
-            identifier: String::from("id"),
-            expression: ExpressionNode::NumberLiteral(NumberLiteral { value: 42 }),
-        })],
+        body: vec![Node::Statement(StatementNode::AssignmentNode(
+            AssignmentNode {
+                identifier: String::from("id"),
+                expression: ExpressionNode::NumberLiteral(NumberLiteral { value: 42 }),
+            },
+        ))],
     };
 
     let parsing_result = run(&input).unwrap();
