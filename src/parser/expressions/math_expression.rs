@@ -1,5 +1,5 @@
 use super::{build_simple_math_expression, ExpressionNode, ExpressionParsingResult};
-use crate::tokenizer::Token;
+use crate::tokenizer::{Operator, Token};
 
 pub fn consume_math_expression(tokens: &[Token], minimum_prio: usize) -> ExpressionParsingResult {
     let (mut root, mut rest) = build_simple_math_expression(tokens)?;
@@ -23,10 +23,9 @@ pub fn consume_math_expression(tokens: &[Token], minimum_prio: usize) -> Express
     Option::Some((root, rest))
 }
 
-fn operator_to_priority(op: &str) -> usize {
+fn operator_to_priority(op: &Operator) -> usize {
     match op {
-        "+" | "-" => 1,
-        "*" | "/" => 2,
-        _ => 0,
+        Operator::Add | Operator::Subtract => 1,
+        Operator::Multiply | Operator::Divide => 2,
     }
 }

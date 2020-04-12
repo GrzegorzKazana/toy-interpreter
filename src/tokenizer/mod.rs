@@ -10,12 +10,20 @@ type TokenizerResult<T> = Option<(T, SourceRest)>;
 #[derive(Debug, PartialEq)]
 pub enum Token {
     NumberToken(String),
-    OperatorToken(String),
+    OperatorToken(Operator),
     LeftParenthesis,
     RightParenthesis,
     Identifier(String),
     Assignment,
     Comma,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub enum Operator {
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
 }
 
 pub trait Tokenizer<T> {

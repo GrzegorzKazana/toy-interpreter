@@ -1,5 +1,5 @@
 use super::common::{CharTokenizer, RegexTokenizer};
-use crate::tokenizer::{Token, Tokenizer, TokenizerResult};
+use crate::tokenizer::{Operator, Token, Tokenizer, TokenizerResult};
 
 pub struct CombinedTokenizer {
     tokenizers: Vec<Box<dyn Tokenizer<Token>>>,
@@ -8,17 +8,31 @@ pub struct CombinedTokenizer {
 impl CombinedTokenizer {
     pub fn new() -> Self {
         let number_tokenizer = RegexTokenizer::new(r"^(\d+)", Box::new(Token::NumberToken));
-        let opeartor_tokenizer = RegexTokenizer::new(r"^(\+|-|\*)", Box::new(Token::OperatorToken));
         let left_paren_tokenizer = CharTokenizer::new('(', Box::new(|_| Token::LeftParenthesis));
         let right_paren_tokenizer = CharTokenizer::new(')', Box::new(|_| Token::RightParenthesis));
         let identifier_tokenizer = RegexTokenizer::new(r"^\w+", Box::new(Token::Identifier));
         let assignment_tokenizer = CharTokenizer::new('=', Box::new(|_| Token::Assignment));
         let comma_tokenizer = CharTokenizer::new(',', Box::new(|_| Token::Comma));
+        let add_op_tokenizer =
+            CharTokenizer::new('+', Box::new(|_| (Token::OperatorToken(Operator::Add))));
+        let add_sub_tokenizer = CharTokenizer::new(
+            '-',
+            Box::new(|_| (Token::OperatorToken(Operator::Subtract))),
+        );
+        let add_mult_tokenizer = CharTokenizer::new(
+            '*',
+            Box::new(|_| (Token::OperatorToken(Operator::Multiply))),
+        );
+        let add_div_tokenizer =
+            CharTokenizer::new('/', Box::new(|_| (Token::OperatorToken(Operator::Divide))));
 
         CombinedTokenizer {
             tokenizers: vec![
                 Box::new(number_tokenizer),
-                Box::new(opeartor_tokenizer),
+                Box::new(add_op_tokenizer),
+                Box::new(add_sub_tokenizer),
+                Box::new(add_mult_tokenizer),
+                Box::new(add_div_tokenizer),
                 Box::new(left_paren_tokenizer),
                 Box::new(right_paren_tokenizer),
                 Box::new(identifier_tokenizer),

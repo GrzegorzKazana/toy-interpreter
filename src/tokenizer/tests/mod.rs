@@ -1,15 +1,15 @@
 #[allow(unused_imports)]
-use super::{run, Token};
+use super::{run, Operator, Token};
 
 #[test]
 fn it_tokenizes_numerical_expressions() {
     let input = "1 + (2 + 3)";
     let expected_result = vec![
         Token::NumberToken(String::from("1")),
-        Token::OperatorToken(String::from("+")),
+        Token::OperatorToken(Operator::Add),
         Token::LeftParenthesis,
         Token::NumberToken(String::from("2")),
-        Token::OperatorToken(String::from("+")),
+        Token::OperatorToken(Operator::Add),
         Token::NumberToken(String::from("3")),
         Token::RightParenthesis,
     ];

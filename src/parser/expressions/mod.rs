@@ -5,7 +5,7 @@ mod math_expression;
 mod parenthesis;
 
 use super::ParsingResult;
-use crate::tokenizer::Token;
+use crate::tokenizer::{Operator, Token};
 
 use function::consume_function_call;
 use identifier::consume_variable_identifier;
@@ -17,7 +17,7 @@ use parenthesis::consume_parenthesis;
 pub enum ExpressionNode {
     NumericalExpression {
         node_a: Box<ExpressionNode>,
-        op: String,
+        op: Operator,
         node_b: Box<ExpressionNode>,
     },
     NumberLiteral {
