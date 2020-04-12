@@ -3,12 +3,13 @@ use crate::parser::expressions::*;
 #[allow(unused_imports)]
 use crate::parser::statements::*;
 #[allow(unused_imports)]
-use crate::parser::{run, Node, Program};
+use crate::parser::{Parser, Node, Program};
 #[allow(unused_imports)]
 use crate::tokenizer::Token;
 
 #[test]
 fn it_detects_simple_assignment() {
+    let mock_parser = Parser {};
     // "id = 42"
     let input = vec![
         Token::Identifier(String::from("id")),
@@ -25,7 +26,7 @@ fn it_detects_simple_assignment() {
         ))],
     };
 
-    let parsing_result = run(&input).unwrap();
+    let parsing_result = mock_parser.parse(&input).unwrap();
 
     assert_eq!(parsing_result, expected_result);
 }

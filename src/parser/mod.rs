@@ -27,26 +27,22 @@ pub fn build(tokens: &[Token]) -> ParsingResult<Node> {
         .or_else(|| build_expression(tokens).map(|(node, rest)| (Node::Expression(node), rest)))
 }
 
-pub fn run(tokens: &[Token]) -> Result<Program, &str> {
-    let mut left_to_parse = tokens;
-    let mut nodes: Vec<Node> = Vec::new();
+pub struct Parser {}
 
-    loop {
-        let res = build(left_to_parse);
-        match res {
-            Option::Some((node, rest)) => {
-                left_to_parse = rest;
-                nodes.push(node);
-            }
-            Option::None => {
-                break if left_to_parse.len() == 0 {
-                    Result::Ok(Program { body: nodes })
-                } else {
-                    println!("{:#?}", nodes);
-                    println!("{:#?}", left_to_parse);
-                    Result::Err("Failed to fully consume the tokens")
-                }
-            }
+impl Parser {
+    pub fn parse(&self, tokens: &[Token]) -> Result<Program, &str> {
+        let mut left_to_parse = tokens;
+        let mut nodes: Vec<Node> = Vec::new();
+
+        while let Option::Some((node, rest)) = build(left_to_parse) {
+            left_to_parse = rest;
+            nodes.push(node);
+        }
+
+        if left_to_parse.len() == 0 {
+            Result::Ok(Program { body: nodes })
+        } else {
+            Result::Err("Failed to fully consume the tokens")
         }
     }
 }

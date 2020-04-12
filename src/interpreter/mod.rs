@@ -3,19 +3,17 @@ mod tests;
 use std::collections::HashMap;
 
 use crate::io::CommandLine;
-use crate::parser;
 use crate::parser::expressions::{FunctionCall, Variable};
 use crate::parser::statements::AssignmentNode;
-use crate::parser::Program;
-use crate::tokenizer;
-use crate::tokenizer::Token;
+use crate::parser::Parser;
+use crate::tokenizer::InputTokenizer;
 use crate::visitor::Visitor;
 
 pub struct Interpreter {
     variables: HashMap<String, usize>,
     command_line: CommandLine,
-    tokenizer: Box<dyn Fn(&str) -> Result<Vec<Token>, &str>>,
-    parser: Box<dyn Fn(&[Token]) -> Result<Program, &str>>,
+    tokenizer: InputTokenizer,
+    parser: Parser,
 }
 
 impl Interpreter {
@@ -23,8 +21,8 @@ impl Interpreter {
         Interpreter {
             variables: HashMap::new(),
             command_line: CommandLine {},
-            tokenizer: Box::new(tokenizer::run),
-            parser: Box::new(parser::run),
+            tokenizer: InputTokenizer {},
+            parser: Parser {},
         }
     }
 }
@@ -40,8 +38,8 @@ impl Interpreter {
     }
 
     pub fn handle_input(&mut self, input_str: &str) -> Result<String, String> {
-        let tokens = (self.tokenizer)(&input_str)?;
-        let ast = (self.parser)(&tokens)?;
+        let tokens = self.tokenizer.tokenize(&input_str)?;
+        let ast = self.parser.parse(&tokens)?;
         let result = self
             .visit(&ast)
             .ok_or(String::from("Failed to interpret."))?;

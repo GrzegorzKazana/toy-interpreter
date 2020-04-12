@@ -1,8 +1,9 @@
 #[allow(unused_imports)]
-use super::{run, Operator, Token};
+use super::{InputTokenizer, Operator, Token};
 
 #[test]
 fn it_tokenizes_numerical_expressions() {
+    let mock_tokenizer = InputTokenizer {};
     let input = "1 + (2 + 3)";
     let expected_result = vec![
         Token::NumberToken(String::from("1")),
@@ -14,13 +15,14 @@ fn it_tokenizes_numerical_expressions() {
         Token::RightParenthesis,
     ];
 
-    let result = run(input).unwrap();
+    let result = mock_tokenizer.tokenize(input).unwrap();
 
     assert_eq!(result, expected_result);
 }
 
 #[test]
 fn it_tokenizes_assignments() {
+    let mock_tokenizer = InputTokenizer {};
     let input = "id = 42";
     let expected_result = vec![
         Token::Identifier(String::from("id")),
@@ -28,13 +30,14 @@ fn it_tokenizes_assignments() {
         Token::NumberToken(String::from("42")),
     ];
 
-    let result = run(input).unwrap();
+    let result = mock_tokenizer.tokenize(input).unwrap();
 
     assert_eq!(result, expected_result);
 }
 
 #[test]
 fn it_tokenizes_assignment_with_function_call() {
+    let mock_tokenizer = InputTokenizer {};
     let input = "id = f(1)";
     let expected_result = vec![
         Token::Identifier(String::from("id")),
@@ -45,7 +48,7 @@ fn it_tokenizes_assignment_with_function_call() {
         Token::RightParenthesis,
     ];
 
-    let result = run(input).unwrap();
+    let result = mock_tokenizer.tokenize(input).unwrap();
 
     assert_eq!(result, expected_result);
 }

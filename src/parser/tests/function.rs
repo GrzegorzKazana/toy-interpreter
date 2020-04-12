@@ -1,12 +1,13 @@
 #[allow(unused_imports)]
 use crate::parser::expressions::*;
 #[allow(unused_imports)]
-use crate::parser::{run, Node, Program};
+use crate::parser::{Node, Parser, Program};
 #[allow(unused_imports)]
 use crate::tokenizer::{Operator, Token};
 
 #[test]
 fn it_detects_function_call() {
+    let mock_parser = Parser {};
     // "id()"
     let input = vec![
         Token::Identifier(String::from("id")),
@@ -23,13 +24,14 @@ fn it_detects_function_call() {
         ))],
     };
 
-    let parsing_result = run(&input).unwrap();
+    let parsing_result = mock_parser.parse(&input).unwrap();
 
     assert_eq!(parsing_result, expected_result);
 }
 
 #[test]
 fn it_detects_function_call_with_arguments() {
+    let mock_parser = Parser {};
     // "id(42, 1 + 2, (a))"
     let input = vec![
         Token::Identifier(String::from("id")),
@@ -65,7 +67,7 @@ fn it_detects_function_call_with_arguments() {
         ))],
     };
 
-    let parsing_result = run(&input).unwrap();
+    let parsing_result = mock_parser.parse(&input).unwrap();
 
     assert_eq!(parsing_result, expected_result);
 }

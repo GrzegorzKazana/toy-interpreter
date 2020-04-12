@@ -30,26 +30,24 @@ pub trait Tokenizer<T> {
     fn tokenize(&self, input: &String) -> TokenizerResult<T>;
 }
 
-pub fn run(input: &str) -> Result<Vec<Token>, &str> {
-    let tokenizer = CombinedTokenizer::new();
+pub struct InputTokenizer {}
 
-    let mut input = String::from(input);
-    let mut tokens: Vec<Token> = Vec::new();
+impl InputTokenizer {
+    pub fn tokenize(&self, input: &str) -> Result<Vec<Token>, &str> {
+        let tokenizer = CombinedTokenizer::new();
 
-    loop {
-        let res = tokenizer.tokenize(&input);
-        match res {
-            Option::Some((matched, rest)) => {
-                tokens.push(matched);
-                input = rest;
-            }
-            Option::None => {
-                break if input.is_empty() {
-                    Result::Ok(tokens)
-                } else {
-                    Result::Err("Failed to tokenize input")
-                }
-            }
-        };
+        let mut input = String::from(input);
+        let mut tokens: Vec<Token> = Vec::new();
+
+        while let Option::Some((matched, rest)) = tokenizer.tokenize(&input) {
+            tokens.push(matched);
+            input = rest;
+        }
+
+        if input.is_empty() {
+            Result::Ok(tokens)
+        } else {
+            Result::Err("Failed to tokenize input")
+        }
     }
 }

@@ -1,12 +1,13 @@
 #[allow(unused_imports)]
 use crate::parser::expressions::*;
 #[allow(unused_imports)]
-use crate::parser::{run, Node, Program};
+use crate::parser::{Node, Parser, Program};
 #[allow(unused_imports)]
 use crate::tokenizer::{Operator, Token};
 
 #[test]
 fn it_detects_simple_expressions() {
+    let mock_parser = Parser {};
     // "1 + 2 + 3"
     let input = vec![
         Token::NumberToken(String::from("1")),
@@ -30,13 +31,14 @@ fn it_detects_simple_expressions() {
         ))],
     };
 
-    let parsing_result = run(&input).unwrap();
+    let parsing_result = mock_parser.parse(&input).unwrap();
 
     assert_eq!(parsing_result, expected_result);
 }
 
 #[test]
 fn it_detects_expressions_with_parenthesis() {
+    let mock_parser = Parser {};
     // "1 + (2 + 3)"
     let input = vec![
         Token::NumberToken(String::from("1")),
@@ -62,13 +64,14 @@ fn it_detects_expressions_with_parenthesis() {
         ))],
     };
 
-    let parsing_result = run(&input).unwrap();
+    let parsing_result = mock_parser.parse(&input).unwrap();
 
     assert_eq!(parsing_result, expected_result);
 }
 
 #[test]
 fn it_respects_operator_priority_1() {
+    let mock_parser = Parser {};
     // 1 + 2 * 3
     let input = vec![
         Token::NumberToken(String::from("1")),
@@ -92,13 +95,14 @@ fn it_respects_operator_priority_1() {
         ))],
     };
 
-    let parsing_result = run(&input).unwrap();
+    let parsing_result = mock_parser.parse(&input).unwrap();
 
     assert_eq!(parsing_result, expected_result);
 }
 
 #[test]
 fn it_respects_operator_priority_2() {
+    let mock_parser = Parser {};
     // 1 * 2 + 3
     let input = vec![
         Token::NumberToken(String::from("1")),
@@ -122,13 +126,14 @@ fn it_respects_operator_priority_2() {
         ))],
     };
 
-    let parsing_result = run(&input).unwrap();
+    let parsing_result = mock_parser.parse(&input).unwrap();
 
     assert_eq!(parsing_result, expected_result);
 }
 
 #[test]
 fn it_respects_operator_priority_3() {
+    let mock_parser = Parser {};
     // 1 + 2 * 3 * 4
     let input = vec![
         Token::NumberToken(String::from("1")),
@@ -158,7 +163,7 @@ fn it_respects_operator_priority_3() {
         ))],
     };
 
-    let parsing_result = run(&input).unwrap();
+    let parsing_result = mock_parser.parse(&input).unwrap();
 
     assert_eq!(parsing_result, expected_result);
 }
