@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-use super::Interpreter;
+use super::Runtime;
 #[allow(unused_imports)]
 use super::Visitor;
 #[allow(unused_imports)]
@@ -11,7 +11,7 @@ use crate::tokenizer::Operator;
 
 #[test]
 fn it_stores_and_retirves_variables() {
-    let mut mock_interpreter = Interpreter::new();
+    let mut mock_interpreter = Runtime::new();
     let assignment = AssignmentNode {
         identifier: String::from("a"),
         expression: ExpressionNode::NumericalExpression(NumericalExpression {
