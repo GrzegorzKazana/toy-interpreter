@@ -16,6 +16,7 @@ pub enum Token {
     Identifier(String),
     Assignment,
     Comma,
+    FunctionKeyword,
 }
 
 #[derive(Debug, PartialEq, Clone)]

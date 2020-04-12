@@ -3,7 +3,7 @@ mod tests;
 use std::collections::HashMap;
 
 use crate::parser::expressions::{FunctionCall, Variable};
-use crate::parser::statements::AssignmentNode;
+use crate::parser::statements::{Assignment, FunctionDeclaration};
 use crate::parser::Program;
 use crate::visitor::Visitor;
 
@@ -34,7 +34,7 @@ impl Visitor for Runtime {
         Option::None
     }
 
-    fn visit_assignment(&mut self, node: &AssignmentNode) -> Option<isize> {
+    fn visit_assignment(&mut self, node: &Assignment) -> Option<isize> {
         let maybe_value = self.visit_expression(&node.expression);
 
         match maybe_value {
@@ -44,5 +44,9 @@ impl Visitor for Runtime {
             }
             _ => Option::None,
         }
+    }
+
+    fn visit_fn_declaration(&mut self, node: &FunctionDeclaration) -> Option<isize> {
+        Option::None
     }
 }

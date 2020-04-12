@@ -9,7 +9,7 @@ use crate::tokenizer::Token;
 
 use function::consume_function_call;
 pub use function::FunctionCall;
-use identifier::consume_variable_identifier;
+pub use identifier::consume_variable_identifier;
 pub use identifier::Variable;
 use literal::consume_number_literal;
 pub use literal::NumberLiteral;

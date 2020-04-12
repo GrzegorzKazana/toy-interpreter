@@ -52,3 +52,26 @@ fn it_tokenizes_assignment_with_function_call() {
 
     assert_eq!(result, expected_result);
 }
+
+#[test]
+fn it_tokenizes_function_definition() {
+    let mock_tokenizer = InputTokenizer {};
+    let input = "fun sum(a, b) = a + b";
+    let expected_result = vec![
+        Token::FunctionKeyword,
+        Token::Identifier(String::from("sum")),
+        Token::LeftParenthesis,
+        Token::Identifier(String::from("a")),
+        Token::Comma,
+        Token::Identifier(String::from("b")),
+        Token::RightParenthesis,
+        Token::Assignment,
+        Token::Identifier(String::from("a")),
+        Token::OperatorToken(Operator::Add),
+        Token::Identifier(String::from("b")),
+    ];
+
+    let result = mock_tokenizer.tokenize(input).unwrap();
+
+    assert_eq!(result, expected_result);
+}

@@ -17,7 +17,8 @@ pub trait Visitor {
 
     fn visit_statement(&mut self, node: &StatementNode) -> Option<isize> {
         match node {
-            StatementNode::AssignmentNode(node) => self.visit_assignment(node),
+            StatementNode::Assignment(node) => self.visit_assignment(node),
+            StatementNode::FunctionDeclaration(node) => self.visit_fn_declaration(node),
         }
     }
 
@@ -53,6 +54,7 @@ pub trait Visitor {
     }
 
     fn visit_var(&self, node: &Variable) -> Option<isize>;
+    fn visit_fn_declaration(&mut self, node: &FunctionDeclaration) -> Option<isize>;
     fn visit_fn_call(&self, node: &FunctionCall) -> Option<isize>;
-    fn visit_assignment(&mut self, node: &AssignmentNode) -> Option<isize>;
+    fn visit_assignment(&mut self, node: &Assignment) -> Option<isize>;
 }

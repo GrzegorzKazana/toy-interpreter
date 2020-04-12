@@ -5,14 +5,14 @@ use super::Visitor;
 #[allow(unused_imports)]
 use crate::parser::expressions::{ExpressionNode, NumberLiteral, NumericalExpression, Variable};
 #[allow(unused_imports)]
-use crate::parser::statements::AssignmentNode;
+use crate::parser::statements::Assignment;
 #[allow(unused_imports)]
 use crate::tokenizer::Operator;
 
 #[test]
 fn it_stores_and_retirves_variables() {
     let mut mock_interpreter = Runtime::new();
-    let assignment = AssignmentNode {
+    let assignment = Assignment {
         identifier: String::from("a"),
         expression: ExpressionNode::NumericalExpression(NumericalExpression {
             op: Operator::Add,

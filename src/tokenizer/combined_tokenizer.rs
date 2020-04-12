@@ -7,6 +7,8 @@ pub struct CombinedTokenizer {
 
 impl CombinedTokenizer {
     pub fn new() -> Self {
+        let fun_keyword_tokenizer =
+            RegexTokenizer::new(r"^fun", Box::new(|_| Token::FunctionKeyword));
         let number_tokenizer = RegexTokenizer::new(r"^(\d+)", Box::new(Token::NumberToken));
         let left_paren_tokenizer = CharTokenizer::new('(', Box::new(|_| Token::LeftParenthesis));
         let right_paren_tokenizer = CharTokenizer::new(')', Box::new(|_| Token::RightParenthesis));
@@ -28,6 +30,7 @@ impl CombinedTokenizer {
 
         CombinedTokenizer {
             tokenizers: vec![
+                Box::new(fun_keyword_tokenizer),
                 Box::new(number_tokenizer),
                 Box::new(add_op_tokenizer),
                 Box::new(add_sub_tokenizer),
