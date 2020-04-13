@@ -75,3 +75,20 @@ fn it_tokenizes_function_definition() {
 
     assert_eq!(result, expected_result);
 }
+
+#[test]
+fn it_tokenizes_terenary() {
+    let mock_tokenizer = InputTokenizer {};
+    let input = "a ? 2 : 1";
+    let expected_result = vec![
+        Token::Identifier(String::from("a")),
+        Token::QuestionMark,
+        Token::NumberToken(String::from("2")),
+        Token::Colon,
+        Token::NumberToken(String::from("1")),
+    ];
+
+    let result = mock_tokenizer.tokenize(input).unwrap();
+
+    assert_eq!(result, expected_result);
+}

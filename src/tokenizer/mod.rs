@@ -11,12 +11,14 @@ type TokenizerResult<T> = Option<(T, SourceRest)>;
 pub enum Token {
     NumberToken(String),
     OperatorToken(Operator),
+    Identifier(String),
     LeftParenthesis,
     RightParenthesis,
-    Identifier(String),
     Assignment,
     Comma,
     FunctionKeyword,
+    QuestionMark,
+    Colon,
 }
 
 #[derive(Debug, PartialEq, Clone)]

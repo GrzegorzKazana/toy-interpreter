@@ -17,6 +17,8 @@ impl CombinedTokenizer {
         let comma_tokenizer = CharTokenizer::new(',', Box::new(|_| Token::Comma));
         let add_op_tokenizer =
             CharTokenizer::new('+', Box::new(|_| (Token::OperatorToken(Operator::Add))));
+        let question_tokenizer = CharTokenizer::new('?', Box::new(|_| Token::QuestionMark));
+        let colon_tokenizer = CharTokenizer::new(':', Box::new(|_| Token::Colon));
         let add_sub_tokenizer = CharTokenizer::new(
             '-',
             Box::new(|_| (Token::OperatorToken(Operator::Subtract))),
@@ -41,6 +43,8 @@ impl CombinedTokenizer {
                 Box::new(identifier_tokenizer),
                 Box::new(assignment_tokenizer),
                 Box::new(comma_tokenizer),
+                Box::new(question_tokenizer),
+                Box::new(colon_tokenizer),
             ],
         }
     }
