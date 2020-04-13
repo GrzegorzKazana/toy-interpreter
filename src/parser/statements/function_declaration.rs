@@ -1,3 +1,4 @@
+use super::super::common::consume_arguments;
 use super::super::expressions::{
     build_expression, consume_variable_identifier_helper, ExpressionNode, Variable,
 };
@@ -18,7 +19,7 @@ pub fn consume_function_declaration(tokens: &[Token]) -> StatementParsingResult 
 
     match (maybe_fn_keyword, maybe_identifier) {
         (Token::FunctionKeyword, Token::Identifier(identifier)) => {
-            let (arguments, arguments_rest) = consume_arguments(rest)?;
+            let (arguments, arguments_rest) = consume_declaration_arguments(rest)?;
             let (maybe_assignment, assignment_rest) = arguments_rest.split_first()?;
 
             match maybe_assignment {
@@ -39,28 +40,6 @@ pub fn consume_function_declaration(tokens: &[Token]) -> StatementParsingResult 
     }
 }
 
-fn consume_arguments(tokens: &[Token]) -> ParsingResult<Vec<Variable>> {
-    let (head, rest) = tokens.split_first()?;
-    if !matches!(head, Token::LeftParenthesis) {
-        return Option::None;
-    }
-    let mut args: Vec<Variable> = Vec::new();
-    let mut rest_tokens = rest;
-
-    loop {
-        let (rest_head, rest_tail) = rest_tokens.split_first()?;
-
-        match rest_head {
-            Token::RightParenthesis => return Option::Some((args, rest_tail)),
-            Token::Comma => {
-                rest_tokens = rest_tail;
-                continue;
-            }
-            _ => {
-                let (arg, arg_rest) = consume_variable_identifier_helper(rest_tokens)?;
-                args.push(arg);
-                rest_tokens = arg_rest;
-            }
-        };
-    }
+fn consume_declaration_arguments(tokens: &[Token]) -> ParsingResult<Vec<Variable>> {
+    consume_arguments(tokens, Box::new(consume_variable_identifier_helper))
 }

@@ -9,12 +9,12 @@ pub struct Assignment {
 }
 
 pub fn consume_assignemnt(tokens: &[Token]) -> StatementParsingResult {
-    if tokens.len() < 3 {
-        return Option::None;
-    }
+    let maybe_identifier = tokens.get(0)?;
+    let maybe_assignment = tokens.get(1)?;
+    let tokens_after_assignment = &tokens[2..];
 
-    match (&tokens[0], &tokens[1], &tokens[2..]) {
-        (Token::Identifier(identifier), Token::Assignment, tokens_after_assignment) => {
+    match (maybe_identifier, maybe_assignment) {
+        (Token::Identifier(identifier), Token::Assignment) => {
             let (expression, rest) = build_expression(tokens_after_assignment)?;
             let result_node = StatementNode::Assignment(Assignment {
                 identifier: identifier.clone(),

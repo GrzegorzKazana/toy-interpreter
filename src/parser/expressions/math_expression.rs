@@ -43,9 +43,11 @@ fn operator_to_priority(op: &Operator) -> usize {
 }
 
 pub fn consume_signed_expression(tokens: &[Token]) -> ExpressionParsingResult {
-    match tokens.split_first() {
-        Option::Some((Token::OperatorToken(Operator::Subtract), rest)) => {
-            build_simple_math_expression(rest).map(|(expr, rest)| {
+    let (head, sign_rest) = tokens.split_first()?;
+
+    match head {
+        Token::OperatorToken(Operator::Subtract) => {
+            build_simple_math_expression(sign_rest).map(|(expr, rest)| {
                 (
                     ExpressionNode::Negation(Negation {
                         expression: Box::new(expr),
@@ -54,9 +56,7 @@ pub fn consume_signed_expression(tokens: &[Token]) -> ExpressionParsingResult {
                 )
             })
         }
-        Option::Some((Token::OperatorToken(Operator::Add), rest)) => {
-            build_simple_math_expression(rest)
-        }
+        Token::OperatorToken(Operator::Add) => build_simple_math_expression(sign_rest),
         _ => build_simple_math_expression(tokens),
     }
 }
