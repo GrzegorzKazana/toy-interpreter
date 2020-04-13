@@ -8,8 +8,13 @@ pub struct NumericalExpression {
     pub node_b: Box<ExpressionNode>,
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub struct Negation {
+    pub expression: Box<ExpressionNode>,
+}
+
 pub fn consume_math_expression(tokens: &[Token], minimum_prio: usize) -> ExpressionParsingResult {
-    let (mut root, mut rest) = build_simple_math_expression(tokens)?;
+    let (mut root, mut rest) = consume_signed_expression(tokens)?;
 
     while let Option::Some((Token::OperatorToken(op), operator_rest)) = rest.split_first() {
         let current_prio = operator_to_priority(op);
@@ -34,5 +39,24 @@ fn operator_to_priority(op: &Operator) -> usize {
     match op {
         Operator::Add | Operator::Subtract => 1,
         Operator::Multiply | Operator::Divide => 2,
+    }
+}
+
+pub fn consume_signed_expression(tokens: &[Token]) -> ExpressionParsingResult {
+    match tokens.split_first() {
+        Option::Some((Token::OperatorToken(Operator::Subtract), rest)) => {
+            build_simple_math_expression(rest).map(|(expr, rest)| {
+                (
+                    ExpressionNode::Negation(Negation {
+                        expression: Box::new(expr),
+                    }),
+                    rest,
+                )
+            })
+        }
+        Option::Some((Token::OperatorToken(Operator::Add), rest)) => {
+            build_simple_math_expression(rest)
+        }
+        _ => build_simple_math_expression(tokens),
     }
 }

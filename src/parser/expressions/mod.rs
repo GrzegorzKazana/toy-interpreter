@@ -15,7 +15,7 @@ pub use identifier::Variable;
 use literal::consume_number_literal;
 pub use literal::NumberLiteral;
 use math_expression::consume_math_expression;
-pub use math_expression::NumericalExpression;
+pub use math_expression::{Negation, NumericalExpression};
 use parenthesis::consume_parenthesis;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -24,6 +24,7 @@ pub enum ExpressionNode {
     NumberLiteral(NumberLiteral),
     Variable(Variable),
     FunctionCall(FunctionCall),
+    Negation(Negation),
 }
 
 type ExpressionParsingResult<'a> = ParsingResult<'a, ExpressionNode>;

@@ -1,6 +1,8 @@
 use super::{Context, VisitExpressionResult, VisitStatementResult, Visitor};
 #[allow(unused_imports)]
-use crate::parser::expressions::{FunctionCall, NumberLiteral, NumericalExpression, Variable};
+use crate::parser::expressions::{
+    FunctionCall, Negation, NumberLiteral, NumericalExpression, Variable,
+};
 use crate::parser::statements::{Assignment, FunctionDeclaration};
 #[allow(unused_imports)]
 use crate::parser::ExpressionNode;
@@ -65,6 +67,25 @@ fn it_visits_nested_math_expression() {
     };
 
     let exprected_result = Result::Ok(14);
+
+    let result = visitor.visit_math_expr(&math_expr, Option::None);
+
+    assert_eq!(result, exprected_result);
+}
+
+#[test]
+fn it_visits_negated_expressions() {
+    let visitor = MockVisitor {};
+    // - 2 + 3
+    let math_expr = NumericalExpression {
+        op: Operator::Add,
+        node_a: Box::new(ExpressionNode::Negation(Negation {
+            expression: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
+        })),
+        node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 3 })),
+    };
+
+    let exprected_result = Result::Ok(1);
 
     let result = visitor.visit_math_expr(&math_expr, Option::None);
 

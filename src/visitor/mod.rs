@@ -60,6 +60,7 @@ pub trait Visitor {
             ExpressionNode::NumberLiteral(node) => self.visit_num(node),
             ExpressionNode::FunctionCall(node) => self.visit_fn_call(node, context),
             ExpressionNode::NumericalExpression(node) => self.visit_math_expr(node, context),
+            ExpressionNode::Negation(node) => self.visit_signed_expr(node, context),
         }
     }
 
@@ -83,6 +84,11 @@ pub trait Visitor {
                 }
             }
         }
+    }
+
+    fn visit_signed_expr(&self, node: &Negation, context: Context) -> VisitExpressionResult {
+        self.visit_expression(&*node.expression, context)
+            .map(|val| -val)
     }
 
     fn visit_num(&self, node: &NumberLiteral) -> VisitExpressionResult {
