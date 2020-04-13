@@ -13,7 +13,11 @@ pub struct Negation {
     pub expression: Box<ExpressionNode>,
 }
 
-pub fn consume_math_expression(tokens: &[Token], minimum_prio: usize) -> ExpressionParsingResult {
+pub fn consume_math_expression(tokens: &[Token]) -> ExpressionParsingResult {
+    consume_math_expression_(tokens, 1)
+}
+
+fn consume_math_expression_(tokens: &[Token], minimum_prio: usize) -> ExpressionParsingResult {
     let (mut root, mut rest) = consume_signed_expression(tokens)?;
 
     while let Option::Some((Token::OperatorToken(op), operator_rest)) = rest.split_first() {
@@ -22,7 +26,7 @@ pub fn consume_math_expression(tokens: &[Token], minimum_prio: usize) -> Express
             break;
         }
 
-        let (next_node, next_rest) = consume_math_expression(operator_rest, current_prio + 1)?;
+        let (next_node, next_rest) = consume_math_expression_(operator_rest, current_prio + 1)?;
 
         rest = next_rest;
         root = ExpressionNode::NumericalExpression(NumericalExpression {

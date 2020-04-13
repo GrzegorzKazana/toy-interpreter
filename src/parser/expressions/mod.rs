@@ -3,6 +3,7 @@ mod identifier;
 mod literal;
 mod math_expression;
 mod parenthesis;
+mod terenary;
 
 use super::ParsingResult;
 use crate::tokenizer::Token;
@@ -17,6 +18,8 @@ pub use literal::NumberLiteral;
 use math_expression::consume_math_expression;
 pub use math_expression::{Negation, NumericalExpression};
 use parenthesis::consume_parenthesis;
+use terenary::consume_terenary;
+pub use terenary::Terenary;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum ExpressionNode {
@@ -25,6 +28,7 @@ pub enum ExpressionNode {
     Variable(Variable),
     FunctionCall(FunctionCall),
     Negation(Negation),
+    Terenary(Terenary),
 }
 
 type ExpressionParsingResult<'a> = ParsingResult<'a, ExpressionNode>;
@@ -37,5 +41,5 @@ fn build_simple_math_expression(tokens: &[Token]) -> ExpressionParsingResult {
 }
 
 pub fn build_expression(tokens: &[Token]) -> ExpressionParsingResult {
-    consume_math_expression(tokens, 1)
+    consume_terenary(tokens).or_else(|| consume_math_expression(tokens))
 }

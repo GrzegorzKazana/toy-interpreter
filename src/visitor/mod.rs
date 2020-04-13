@@ -61,6 +61,7 @@ pub trait Visitor {
             ExpressionNode::FunctionCall(node) => self.visit_fn_call(node, context),
             ExpressionNode::NumericalExpression(node) => self.visit_math_expr(node, context),
             ExpressionNode::Negation(node) => self.visit_signed_expr(node, context),
+            _ => Result::Err(String::from("asd")),
         }
     }
 
