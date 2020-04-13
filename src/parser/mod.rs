@@ -30,7 +30,7 @@ pub fn build(tokens: &[Token]) -> ParsingResult<Node> {
 pub struct Parser {}
 
 impl Parser {
-    pub fn parse(&self, tokens: &[Token]) -> Result<Program, &str> {
+    pub fn parse(&self, tokens: &[Token]) -> Result<Program, String> {
         let mut left_to_parse = tokens;
         let mut nodes: Vec<Node> = Vec::new();
 
@@ -42,7 +42,10 @@ impl Parser {
         if left_to_parse.len() == 0 {
             Result::Ok(Program { body: nodes })
         } else {
-            Result::Err("Failed to fully consume the tokens")
+            Result::Err(format!(
+                "Failed to fully consume the tokens:\n{:#?}",
+                left_to_parse
+            ))
         }
     }
 }

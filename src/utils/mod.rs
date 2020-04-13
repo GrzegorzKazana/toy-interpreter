@@ -10,3 +10,7 @@ pub fn split_str_trim(input: &String, idx: usize) -> (String, String) {
 
     (head, tail.trim().to_string())
 }
+
+pub fn flatten_result<T, U>(nested_result: Result<Result<T, U>, U>) -> Result<T, U> {
+    nested_result.and_then(|x| x)
+}

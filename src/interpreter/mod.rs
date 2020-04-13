@@ -31,13 +31,10 @@ impl Interpreter {
         }
     }
 
-    pub fn handle_input(&mut self, input_str: &str) -> Result<String, String> {
+    fn handle_input(&mut self, input_str: &str) -> Result<String, String> {
         let tokens = self.tokenizer.tokenize(&input_str)?;
         let ast = self.parser.parse(&tokens)?;
-        let result = self
-            .runtime
-            .exec(&ast)
-            .ok_or(String::from("Failed to interpret."))?;
+        let result = self.runtime.exec(&ast)?;
 
         Result::Ok(format!("{}", result))
     }

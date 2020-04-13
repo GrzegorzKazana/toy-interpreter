@@ -34,7 +34,7 @@ pub trait Tokenizer<T> {
 pub struct InputTokenizer {}
 
 impl InputTokenizer {
-    pub fn tokenize(&self, input: &str) -> Result<Vec<Token>, &str> {
+    pub fn tokenize(&self, input: &str) -> Result<Vec<Token>, String> {
         let tokenizer = CombinedTokenizer::new();
 
         let mut input = String::from(input);
@@ -48,7 +48,10 @@ impl InputTokenizer {
         if input.is_empty() {
             Result::Ok(tokens)
         } else {
-            Result::Err("Failed to tokenize input")
+            Result::Err(format!(
+                "Failed to tokenize inputm unexprected input:\n{}",
+                input
+            ))
         }
     }
 }
