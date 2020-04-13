@@ -1,7 +1,7 @@
 use super::{Context, VisitExpressionResult, VisitStatementResult, Visitor};
 #[allow(unused_imports)]
 use crate::parser::expressions::{
-    FunctionCall, Negation, NumberLiteral, NumericalExpression, Variable,
+    FunctionCall, Negation, NumberLiteral, NumericalExpression, Terenary, Variable,
 };
 use crate::parser::statements::{Assignment, FunctionDeclaration};
 #[allow(unused_imports)]
@@ -88,6 +88,52 @@ fn it_visits_negated_expressions() {
     let exprected_result = Result::Ok(1);
 
     let result = visitor.visit_math_expr(&math_expr, Option::None);
+
+    assert_eq!(result, exprected_result);
+}
+
+#[test]
+fn it_visits_terenary() {
+    let visitor = MockVisitor {};
+    // "1 + 2 ? -3 : 4"
+    let terenary = Terenary {
+        condition: Box::new(ExpressionNode::NumericalExpression(NumericalExpression {
+            op: Operator::Add,
+            node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+            node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 2 })),
+        })),
+        value: Box::new(ExpressionNode::Negation(Negation {
+            expression: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 3 })),
+        })),
+        alternative: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 4 })),
+    };
+
+    let exprected_result = Result::Ok(-3);
+
+    let result = visitor.visit_terenary(&terenary, Option::None);
+
+    assert_eq!(result, exprected_result);
+}
+
+#[test]
+fn it_visits_falsy_terenary() {
+    let visitor = MockVisitor {};
+    // "1 - 1 ? -3 : 4"
+    let terenary = Terenary {
+        condition: Box::new(ExpressionNode::NumericalExpression(NumericalExpression {
+            op: Operator::Subtract,
+            node_a: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+            node_b: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 1 })),
+        })),
+        value: Box::new(ExpressionNode::Negation(Negation {
+            expression: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 3 })),
+        })),
+        alternative: Box::new(ExpressionNode::NumberLiteral(NumberLiteral { value: 4 })),
+    };
+
+    let exprected_result = Result::Ok(4);
+
+    let result = visitor.visit_terenary(&terenary, Option::None);
 
     assert_eq!(result, exprected_result);
 }

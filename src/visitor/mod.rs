@@ -61,7 +61,7 @@ pub trait Visitor {
             ExpressionNode::FunctionCall(node) => self.visit_fn_call(node, context),
             ExpressionNode::NumericalExpression(node) => self.visit_math_expr(node, context),
             ExpressionNode::Negation(node) => self.visit_signed_expr(node, context),
-            _ => Result::Err(String::from("asd")),
+            ExpressionNode::Terenary(node) => self.visit_terenary(node, context),
         }
     }
 
@@ -84,6 +84,15 @@ pub trait Visitor {
                     Result::Err(String::from("Operation forbidden."))
                 }
             }
+        }
+    }
+
+    fn visit_terenary(&self, node: &Terenary, context: Context) -> VisitExpressionResult {
+        let condition_val = self.visit_expression(&*node.condition, context)?;
+        if condition_val > 0 {
+            self.visit_expression(&*node.value, context)
+        } else {
+            self.visit_expression(&*node.alternative, context)
         }
     }
 
