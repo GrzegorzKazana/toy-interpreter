@@ -24,9 +24,13 @@ impl Interpreter {
 impl Interpreter {
     pub fn run(&mut self) {
         while let Option::Some(input_str) = self.command_line.get_input() {
-            match self.handle_input(&input_str) {
-                Result::Ok(msg) => self.command_line.print_output(msg),
-                Result::Err(msg) => self.command_line.print_output(msg),
+            match input_str.trim() {
+                "exit" => break,
+                "" => continue,
+                _ => match self.handle_input(&input_str) {
+                    Result::Ok(msg) => self.command_line.print_output(msg),
+                    Result::Err(err_msg) => self.command_line.print_output(err_msg),
+                },
             }
         }
     }

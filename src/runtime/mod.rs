@@ -50,21 +50,18 @@ impl Visitor for Runtime {
             ));
         }
 
-        let declarations_w_calls = function.arguments.iter().zip(node.arguments.iter());
+        let arg_declarations_w_expression = function.arguments.iter().zip(node.arguments.iter());
         let mut function_call_context: HashMap<String, isize> = match context {
             Option::Some(map) => map.clone(),
             _ => HashMap::new(),
         };
 
-        for (declaration, call) in declarations_w_calls {
+        for (declaration, expr) in arg_declarations_w_expression {
             let id = declaration.identifier.clone();
-            let val = self.visit_expression(call, context)?;
+            let val = self.visit_expression(expr, context)?;
             function_call_context.insert(id, val);
         }
-        let return_value =
-            self.visit_expression(&function.expression, Option::Some(&function_call_context))?;
-
-        Result::Ok(return_value)
+        self.visit_expression(&function.expression, Option::Some(&function_call_context))
     }
 
     fn visit_assignment(&mut self, node: &Assignment) -> VisitStatementResult {

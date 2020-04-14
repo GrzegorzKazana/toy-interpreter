@@ -39,10 +39,10 @@ pub trait Visitor {
                 }
                 Node::Expression(expression) => self
                     .visit_expression(expression, Option::None)
-                    .map(|val| VisitResponse::Value(val)),
+                    .map(VisitResponse::Value),
             })
             .last()
-            .ok_or(String::from("asd"));
+            .ok_or(String::from("Empty program body"));
 
         flatten_result(result)
     }
@@ -81,7 +81,7 @@ pub trait Visitor {
                 if val_b != 0 {
                     Result::Ok(val_a / val_b)
                 } else {
-                    Result::Err(String::from("Operation forbidden."))
+                    Result::Err(String::from("Operation forbidden"))
                 }
             }
         }
