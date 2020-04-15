@@ -9,14 +9,14 @@ use crate::interpreter::Interpreter;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub struct JsInterpreter {
+pub struct InterpreterJs {
     _interpreter: Interpreter,
 }
 
 #[wasm_bindgen]
-impl JsInterpreter {
-    pub fn new() -> JsInterpreter {
-        JsInterpreter {
+impl InterpreterJs {
+    pub fn new() -> InterpreterJs {
+        InterpreterJs {
             _interpreter: Interpreter::new(),
         }
     }
