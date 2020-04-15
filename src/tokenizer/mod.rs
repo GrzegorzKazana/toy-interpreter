@@ -1,11 +1,10 @@
-mod combined_tokenizer;
 mod common;
 mod tests;
 
-use combined_tokenizer::CombinedTokenizer;
+use common as C;
 
 type SourceRest = String;
-type TokenizerResult<T> = Option<(T, SourceRest)>;
+type TokenizerResult = Option<(Token, SourceRest)>;
 
 #[derive(Debug, PartialEq)]
 pub enum Token {
@@ -29,31 +28,38 @@ pub enum Operator {
     Divide,
 }
 
-pub trait Tokenizer<T> {
-    fn tokenize(&self, input: &String) -> TokenizerResult<T>;
-}
-
 pub struct InputTokenizer {}
 
 impl InputTokenizer {
-    pub fn tokenize(&self, input: &str) -> Result<Vec<Token>, String> {
-        let tokenizer = CombinedTokenizer::new();
+    pub fn get_token(&self, input: &str) -> TokenizerResult {
+        C::tokenize_fun_keyword(input)
+            .or_else(|| C::tokenize_number(input))
+            .or_else(|| C::tokenize_identifier(input))
+            .or_else(|| C::tokenize_assignment(input))
+            .or_else(|| C::tokenize_comma(input))
+            .or_else(|| C::tokenize_question_mark(input))
+            .or_else(|| C::tokenize_colon(input))
+            .or_else(|| C::tokenize_left_parens(input))
+            .or_else(|| C::tokenize_right_parens(input))
+            .or_else(|| C::tokenize_addition(input))
+            .or_else(|| C::tokenize_subtraction(input))
+            .or_else(|| C::tokenize_multiplication(input))
+            .or_else(|| C::tokenize_division(input))
+    }
 
-        let mut input = String::from(input);
+    pub fn tokenize(&self, input: &str) -> Result<Vec<Token>, String> {
+        let mut current_input = String::from(input);
         let mut tokens: Vec<Token> = Vec::new();
 
-        while let Option::Some((matched, rest)) = tokenizer.tokenize(&input) {
+        while let Option::Some((matched, rest)) = self.get_token(&current_input) {
             tokens.push(matched);
-            input = rest;
+            current_input = rest;
         }
 
-        if input.is_empty() {
+        if current_input.is_empty() {
             Result::Ok(tokens)
         } else {
-            Result::Err(format!(
-                "Failed to tokenize inputm unexprected input:\n{}",
-                input
-            ))
+            Result::Err(format!("Failed to tokenize unexpected input:\n{}", input))
         }
     }
 }
