@@ -1,10 +1,10 @@
 <script>
-    import CommandLineContainer from '../modules/command-line/CommandLineContainer.svelte';
+    import CommandLine from '../modules/command-line/CommandLine.svelte';
     import DemoContainer from '../modules/demo/DemoContainer.svelte';
 </script>
 
 <main class="page">
-    <CommandLineContainer />
+    <CommandLine />
     <!-- <DemoContainer /> -->
 </main>
 
