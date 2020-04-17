@@ -5,15 +5,19 @@
 
     export let interpret;
     export let lines;
+    export let inputHistory;
+    export let isInitialized;
 
-    let inputRef;
+    let inputRef = undefined;
 </script>
 
 <article class="command-line" on:click={() => inputRef.focus()}>
-    {#each lines as line, i (i)}
+    {#each lines as { id, ...line } (id)}
         <CommandLineEntry {...line} />
     {/each}
-    <CommandInput bind:inputRef onSubmit={interpret} />
+    {#if isInitialized}
+        <CommandInput bind:inputRef onSubmit={interpret} {inputHistory} />
+    {/if}
 </article>
 
 <style lang="scss">

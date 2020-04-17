@@ -1,16 +1,61 @@
 <script>
     import { tick, onMount } from 'svelte';
-    import { ENTER } from '../../../config/variables.ts';
+    import { writable } from 'svelte/store';
+    import { ENTER, ARROW_UP, ARROW_DOWN } from '../../../config/variables.ts';
 
     export let inputRef;
     export let onSubmit;
+    export let inputHistory;
 
-    let text = 'start typing...';
+    let text = '2 + 2';
+    let stashedText = '';
+    let viewedHistoryIndex = -1;
+
+    $: relevantInputHistory = inputHistory.filter(historyInput =>
+        historyInput.startsWith(stashedText),
+    );
+
+    // function st() {
+    //     const {subscribe, update} = writable({ history: [], stashedInput: '', value: '' })
+
+    //     return
+    // }
 
     const handleKeyPress = e => {
-        if (e.keyCode !== ENTER) return false;
-        onSubmit(text);
-        text = '';
+        switch (e.keyCode) {
+            case ENTER: {
+                onSubmit(text.trim());
+                text = '';
+                stashedText = '';
+                viewedHistoryIndex = -1;
+                return;
+            }
+            case ARROW_UP: {
+                if (viewedHistoryIndex === -1) stashedText = text;
+                viewedHistoryIndex = Math.min(
+                    viewedHistoryIndex + 1,
+                    relevantInputHistory.length - 1,
+                );
+                text = relevantInputHistory[viewedHistoryIndex];
+                e.preventDefault();
+                tick().then(() => {
+                    console.log({ relevantInputHistory, viewedHistoryIndex });
+                    inputRef.setSelectionRange(
+                        relevantInputHistory[viewedHistoryIndex].length,
+                        relevantInputHistory[viewedHistoryIndex].length,
+                    );
+                });
+                return;
+            }
+            case ARROW_DOWN: {
+                viewedHistoryIndex = Math.max(viewedHistoryIndex - 1, -1);
+                stashedText = text;
+                text = relevantInputHistory[viewedHistoryIndex] || '';
+                return;
+            }
+            default:
+                return false;
+        }
     };
 
     onMount(() => {
@@ -25,7 +70,7 @@
         type="text"
         bind:this={inputRef}
         bind:value={text}
-        on:keypress={handleKeyPress} />
+        on:keydown={handleKeyPress} />
 </p>
 
 <style lang="scss">
@@ -48,7 +93,7 @@
         }
 
         &__prefix {
-            min-width: 2rem;
+            min-width: 1em;
         }
     }
 </style>

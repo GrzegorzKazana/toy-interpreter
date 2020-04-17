@@ -22,7 +22,7 @@
         white-space: pre-line;
 
         &__prefix {
-            min-width: 2rem;
+            min-width: 1em;
         }
     }
 </style>

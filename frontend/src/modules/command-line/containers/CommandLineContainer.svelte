@@ -5,32 +5,33 @@
 
     let interpreter = null;
     const store = commandLineStore();
+    store.showInitializationMessage();
 
     const interpret = input => {
         if (!interpreter) return;
         store.addInputLine(input);
-        try {
-            const output = interpreter.interpret(input);
-            store.addOutputLine(output);
-        } catch (msg) {
-            console.warn(msg);
-            store.addOutputLine(msg);
-        }
+        input && store.addOutputLine(interpreter.interpret(input));
     };
 
     onMount(() => {
         import('interpreter-js')
             .then(({ InterpreterJs }) => {
                 interpreter = InterpreterJs.new();
-                console.log('loaded!', interpreter);
+                store.showInitCompleteMessage();
             })
-            .catch(console.warn);
+            .catch(e => store.showInitErrorMessage(e.message));
     });
 
     onDestroy(() => {
         if (!interpreter) return;
         interpreter.free();
     });
+
+    $: console.log($store.userInputHistory);
 </script>
 
-<slot {interpret} lines={$store.lines} />
+<slot
+    {interpret}
+    lines={$store.lines}
+    inputHistory={$store.userInputHistory}
+    isInitialized={!!interpreter} />

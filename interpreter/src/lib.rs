@@ -21,9 +21,10 @@ impl InterpreterJs {
         }
     }
 
-    pub fn interpret(&mut self, input_str: &str) -> Result<String, JsValue> {
-        self._interpreter
-            .handle_input(input_str)
-            .or_else(|err_msg| Result::Err(JsValue::from_str(&err_msg)))
+    pub fn interpret(&mut self, input_str: &str) -> String {
+        match self._interpreter.handle_input(input_str) {
+            Result::Ok(output) => output,
+            Result::Err(err) => err,
+        }
     }
 }

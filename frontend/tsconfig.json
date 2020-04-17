@@ -9,6 +9,7 @@
         "target": "es5",
         "jsx": "react",
         "allowJs": true,
+        "allowSyntheticDefaultImports": true,
         "baseUrl": "./",
         "paths": {
             "svelte": ["node_modules/svelte"]
