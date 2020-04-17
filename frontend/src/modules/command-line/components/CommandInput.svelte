@@ -1,12 +1,13 @@
 <script>
     import { tick, onMount } from 'svelte';
+    import { wrapStorage } from '../../../common/utils';
     import inputHistoryStore from '../stores/inputHistoryStore.ts';
     import { ENTER, ARROW_UP, ARROW_DOWN } from '../../../config/variables.ts';
 
     export let inputRef;
     export let onSubmit;
 
-    const inputState = inputHistoryStore();
+    const inputState = inputHistoryStore(wrapStorage(sessionStorage));
 
     const handleKeyPress = e => {
         switch (e.keyCode) {

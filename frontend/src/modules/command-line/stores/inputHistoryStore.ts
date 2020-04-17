@@ -1,4 +1,7 @@
 import { writable } from 'svelte/store';
+import { head, WrappedStorage } from '../../../common/utils';
+
+const COMMAND_HISTORY_KEY = 'COMMAND_HISTORY_KEY';
 
 const initialState = {
     history: [] as string[],
@@ -8,8 +11,11 @@ const initialState = {
     value: '',
 };
 
-export default function inputHistoryStore() {
-    const { subscribe, update } = writable(initialState);
+export default function inputHistoryStore(storage: WrappedStorage) {
+    const history = storage.load<string[]>(COMMAND_HISTORY_KEY);
+    const { subscribe, update } = writable(
+        history ? { ...initialState, history, relevantHistory: history } : initialState,
+    );
 
     const handleUpKey = () =>
         update(s => {
@@ -39,14 +45,19 @@ export default function inputHistoryStore() {
         });
 
     const addEntry = (input: string) =>
-        update(s => ({
-            ...s,
-            history: input ? [input, ...s.history] : s.history,
-            relevantHistory: input ? [input, ...s.history] : s.history,
-            value: '',
-            stashedInput: '',
-            viewedHistoryIndex: -1,
-        }));
+        update(s => {
+            const history = input && input !== head(s.history) ? [input, ...s.history] : s.history;
+            storage.save(COMMAND_HISTORY_KEY, history);
+
+            return {
+                ...s,
+                history,
+                relevantHistory: history,
+                value: '',
+                stashedInput: '',
+                viewedHistoryIndex: -1,
+            };
+        });
 
     const setValue = (value: string) =>
         update(s => ({

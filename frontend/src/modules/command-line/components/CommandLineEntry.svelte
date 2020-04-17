@@ -19,7 +19,7 @@
 
         margin: 0 0 4px 0;
 
-        white-space: pre-line;
+        white-space: pre-wrap;
 
         &__prefix {
             min-width: 1em;
