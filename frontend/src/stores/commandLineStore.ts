@@ -8,7 +8,6 @@ type Line = {
 };
 
 const initialState = {
-    initMessageId: '',
     lines: [] as Line[],
 };
 
@@ -24,25 +23,8 @@ export default function commandLineStore() {
     const addOutputLine = (output: string) =>
         update(s => ({ ...s, lines: [...s.lines, { id: uuid(), text: output }] }));
 
-    const showInitializationMessage = () =>
-        update(s => {
-            const initMessageId = uuid();
-
-            return {
-                ...s,
-                initMessageId,
-                lines: [...s.lines, { id: initMessageId, text: 'Initializing...' }],
-            };
-        });
-
-    const showInitCompleteMessage = () =>
-        update(s => ({
-            ...s,
-            lines: s.lines.map(line =>
-                line.id === s.initMessageId ? { ...line, text: `${line.text} Done!` } : line,
-            ),
-        }));
-
+    const showInitializationMessage = () => addOutputLine('Initializing...');
+    const showInitCompleteMessage = () => addOutputLine('Done!');
     const showInitErrorMessage = (err: string) => addOutputLine(`Error occured: ${err}`);
 
     return {

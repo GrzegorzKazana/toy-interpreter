@@ -13,7 +13,7 @@
 
     const focusInput = e => e.target === wrapperRef && inputRef.focus();
     const scrollToBottom = el => ({
-        update: () => window.scrollTo(0, el.scrollHeight),
+        update: () => wrapperRef.scrollTo(0, el.scrollHeight),
     });
 </script>
 
@@ -38,6 +38,7 @@
 
     .command-line {
         height: 100%;
+        overflow-y: scroll;
         background-color: #000;
         padding: 1.5rem;
     }
