@@ -1,6 +1,6 @@
 <script>
     import { tick, onMount } from 'svelte';
-    import { ENTER } from '../../../config/variables';
+    import { ENTER } from '../../../config/variables.ts';
 
     export let inputRef;
     export let onSubmit;

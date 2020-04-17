@@ -1,13 +1,13 @@
 <script>
     import { tick, onMount } from 'svelte';
-
+    import store from './CommandLineStore.ts';
     import CommandLineEntry from './components/CommandLineEntry.svelte';
     import CommandInput from './components/CommandInput.svelte';
 
     let inputRef;
     let lines = [{ text: 'Hello world', prefix: '>' }, { text: 'Hello fellow user' }];
 
-    const onSubmit = text => (lines = [...lines, { text, prefix: '>' }, { text: '2' }]);
+    const onSubmit = text => (lines = [...lines, { text, prefix: '>' }, { text: '3' }]);
 </script>
 
 <article class="command-line" on:click={() => inputRef.focus()}>
