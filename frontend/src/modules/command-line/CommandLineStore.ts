@@ -10,7 +10,6 @@ type Line = {
 const initialState = {
     initMessageId: '',
     lines: [] as Line[],
-    userInputHistory: [] as string[],
 };
 
 export default function commandLineStore() {
@@ -19,7 +18,6 @@ export default function commandLineStore() {
     const addInputLine = (input: string) =>
         update(s => ({
             ...s,
-            userInputHistory: input ? [input, ...s.userInputHistory] : s.userInputHistory,
             lines: [...s.lines, { id: uuid(), text: input, prefix: '>' }],
         }));
 

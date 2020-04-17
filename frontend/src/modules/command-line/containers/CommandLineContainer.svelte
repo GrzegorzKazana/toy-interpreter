@@ -26,8 +26,6 @@
         if (!interpreter) return;
         interpreter.free();
     });
-
-    $: console.log($store.userInputHistory);
 </script>
 
 <slot

@@ -1,56 +1,28 @@
 <script>
     import { tick, onMount } from 'svelte';
-    import { writable } from 'svelte/store';
+    import inputHistoryStore from '../stores/inputHistoryStore.ts';
     import { ENTER, ARROW_UP, ARROW_DOWN } from '../../../config/variables.ts';
 
     export let inputRef;
     export let onSubmit;
-    export let inputHistory;
 
-    let text = '2 + 2';
-    let stashedText = '';
-    let viewedHistoryIndex = -1;
-
-    $: relevantInputHistory = inputHistory.filter(historyInput =>
-        historyInput.startsWith(stashedText),
-    );
-
-    // function st() {
-    //     const {subscribe, update} = writable({ history: [], stashedInput: '', value: '' })
-
-    //     return
-    // }
+    const inputState = inputHistoryStore();
 
     const handleKeyPress = e => {
         switch (e.keyCode) {
             case ENTER: {
-                onSubmit(text.trim());
-                text = '';
-                stashedText = '';
-                viewedHistoryIndex = -1;
+                const value = $inputState.value;
+                onSubmit(value);
+                inputState.addEntry(value);
                 return;
             }
             case ARROW_UP: {
-                if (viewedHistoryIndex === -1) stashedText = text;
-                viewedHistoryIndex = Math.min(
-                    viewedHistoryIndex + 1,
-                    relevantInputHistory.length - 1,
-                );
-                text = relevantInputHistory[viewedHistoryIndex];
+                inputState.handleUpKey();
                 e.preventDefault();
-                tick().then(() => {
-                    console.log({ relevantInputHistory, viewedHistoryIndex });
-                    inputRef.setSelectionRange(
-                        relevantInputHistory[viewedHistoryIndex].length,
-                        relevantInputHistory[viewedHistoryIndex].length,
-                    );
-                });
                 return;
             }
             case ARROW_DOWN: {
-                viewedHistoryIndex = Math.max(viewedHistoryIndex - 1, -1);
-                stashedText = text;
-                text = relevantInputHistory[viewedHistoryIndex] || '';
+                inputState.handleDownKey();
                 return;
             }
             default:
@@ -59,7 +31,7 @@
     };
 
     onMount(() => {
-        tick().then(() => tick().then(() => inputRef.focus()));
+        tick().then(() => inputRef.focus());
     });
 </script>
 
@@ -68,9 +40,11 @@
     <input
         class="command__input"
         type="text"
+        spellcheck="false"
         bind:this={inputRef}
-        bind:value={text}
-        on:keydown={handleKeyPress} />
+        value={$inputState.value}
+        on:keydown={handleKeyPress}
+        on:input={e => inputState.setValue(e.target.value)} />
 </p>
 
 <style lang="scss">
