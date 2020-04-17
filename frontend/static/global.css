@@ -3,3 +3,7 @@ body {
     padding: 0;
     max-width: unset;
 }
+
+* {
+    box-sizing: border-box;
+}

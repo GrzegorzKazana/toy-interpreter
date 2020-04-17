@@ -32,8 +32,7 @@
     @import '../../../common/styles/mixins.scss';
 
     .command-line {
-        flex-grow: 1;
-        flex-basis: 0;
+        height: 100%;
         background-color: #000;
         padding: 1.5rem;
     }

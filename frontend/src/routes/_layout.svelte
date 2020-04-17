@@ -1,2 +1,8 @@
 <svelte:options immutable={true} />
+
+<svelte:head>
+    <title>toy-interpreter</title>
+    <meta name="description" content="toy interpreter written in Rust, running with wasm." />
+</svelte:head>
+
 <slot />
