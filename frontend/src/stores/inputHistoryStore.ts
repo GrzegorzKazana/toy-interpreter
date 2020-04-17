@@ -17,7 +17,7 @@ export default function inputHistoryStore(storage: WrappedStorage) {
         history ? { ...initialState, history, relevantHistory: history } : initialState,
     );
 
-    const handleUpKey = () =>
+    const prev = () =>
         update(s => {
             const nextHistoryIndex = Math.min(
                 s.viewedHistoryIndex + 1,
@@ -32,7 +32,7 @@ export default function inputHistoryStore(storage: WrappedStorage) {
             };
         });
 
-    const handleDownKey = () =>
+    const next = () =>
         update(s => {
             const nextHistoryIndex = Math.max(s.viewedHistoryIndex - 1, -1);
 
@@ -69,8 +69,8 @@ export default function inputHistoryStore(storage: WrappedStorage) {
 
     return {
         subscribe,
-        handleUpKey,
-        handleDownKey,
+        prev,
+        next,
         addEntry,
         setValue,
     };

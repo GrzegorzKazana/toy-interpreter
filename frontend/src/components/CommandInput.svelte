@@ -18,12 +18,12 @@
                 return;
             }
             case ARROW_UP: {
-                inputState.handleUpKey();
+                inputState.prev();
                 e.preventDefault();
                 return;
             }
             case ARROW_DOWN: {
-                inputState.handleDownKey();
+                inputState.next();
                 return;
             }
             default:
