@@ -9,14 +9,19 @@
     export let isInitialized;
 
     let inputRef;
+    let wrapperRef;
 
-    const focusInput = () => inputRef.focus();
+    const focusInput = e => e.target === wrapperRef && inputRef.focus();
     const scrollToBottom = el => ({
         update: () => window.scrollTo(0, el.scrollHeight),
     });
 </script>
 
-<article class="command-line" on:click={focusInput} use:scrollToBottom={lines}>
+<article
+    class="command-line"
+    bind:this={wrapperRef}
+    on:click={focusInput}
+    use:scrollToBottom={lines}>
     <CommandLineEntry text={welcomeHeader} />
     <a class="link" href={repoUrl}>{repoUrl}</a>
     <CommandLineEntry text={welcomeFooter} />
