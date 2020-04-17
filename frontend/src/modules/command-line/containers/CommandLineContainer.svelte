@@ -1,5 +1,6 @@
 <script>
     import { tick, onMount, onDestroy } from 'svelte';
+    import { grammarCmd, grammar, examplesCmd, examples } from '../../../config/variables.ts';
     import commandLineStore from '../CommandLineStore.ts';
     import CommandLineList from '../components/CommandLineList.svelte';
 
@@ -8,9 +9,21 @@
     store.showInitializationMessage();
 
     const interpret = input => {
-        if (!interpreter) return;
         store.addInputLine(input);
-        input && store.addOutputLine(interpreter.interpret(input));
+        switch (input) {
+            case grammarCmd: {
+                store.addOutputLine(grammar);
+                return;
+            }
+            case examplesCmd: {
+                store.addOutputLine(examples);
+                return;
+            }
+            default: {
+                if (!interpreter || !input) return;
+                store.addOutputLine(interpreter.interpret(input));
+            }
+        }
     };
 
     onMount(() => {
@@ -28,8 +41,4 @@
     });
 </script>
 
-<slot
-    {interpret}
-    lines={$store.lines}
-    inputHistory={$store.userInputHistory}
-    isInitialized={!!interpreter} />
+<slot {interpret} lines={$store.lines} isInitialized={!!interpreter} />
