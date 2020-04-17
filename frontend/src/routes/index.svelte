@@ -1,9 +1,12 @@
 <script>
-    import CommandLine from '../modules/command-line/CommandLine.svelte';
+    import CommandLineContainer from '../containers/CommandLineContainer.svelte';
+    import CommandLineList from '../components/CommandLineList.svelte';
 </script>
 
 <main class="page">
-    <CommandLine />
+    <CommandLineContainer let:lines let:interpret let:isInitialized let:inputHistory>
+        <CommandLineList {lines} {interpret} {isInitialized} {inputHistory} />
+    </CommandLineContainer>
 </main>
 
 <style lang="scss">

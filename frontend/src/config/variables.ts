@@ -52,7 +52,7 @@ fun sum(a, b) = a + b
 fun sub(a, b) = sum(a, -b)
 
 fun factorial(n) = n ? n * factorial(n - 1) : 1
-fun fibonacci(n) = n ? (n - 1 ? fib(n - 1) + fib(n - 2) : 1) : 0
+fun fibonacci(n) = n ? (n - 1 ? fibonacci(n - 1) + fibonacci(n - 2) : 1) : 0
 
 `;
 

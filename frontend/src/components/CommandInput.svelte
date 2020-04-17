@@ -1,8 +1,8 @@
 <script>
     import { tick, onMount } from 'svelte';
-    import { wrapStorage } from '../../../common/utils';
+    import { wrapStorage } from '../common/utils';
     import inputHistoryStore from '../stores/inputHistoryStore.ts';
-    import { ENTER, ARROW_UP, ARROW_DOWN } from '../../../config/variables.ts';
+    import { ENTER, ARROW_UP, ARROW_DOWN } from '../config/variables.ts';
 
     export let inputRef;
     export let onSubmit;
@@ -49,7 +49,7 @@
 </p>
 
 <style lang="scss">
-    @import '../../../common/styles/mixins.scss';
+    @import '../common/styles/mixins.scss';
 
     .command {
         display: flex;

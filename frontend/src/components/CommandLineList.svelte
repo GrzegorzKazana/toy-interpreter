@@ -2,7 +2,7 @@
     import { tick, onMount } from 'svelte';
     import CommandLineEntry from './CommandLineEntry.svelte';
     import CommandInput from './CommandInput.svelte';
-    import { welcomeHeader, welcomeFooter, repoUrl } from '../../../config/variables.ts';
+    import { welcomeHeader, welcomeFooter, repoUrl } from '../config/variables.ts';
 
     export let interpret;
     export let lines;
@@ -29,7 +29,7 @@
 </article>
 
 <style lang="scss">
-    @import '../../../common/styles/mixins.scss';
+    @import '../common/styles/mixins.scss';
 
     .command-line {
         height: 100%;

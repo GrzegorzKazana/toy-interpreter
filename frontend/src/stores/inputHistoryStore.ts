@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { head, WrappedStorage } from '../../../common/utils';
+import { head, WrappedStorage } from '../common/utils';
 
 const COMMAND_HISTORY_KEY = 'COMMAND_HISTORY_KEY';
 

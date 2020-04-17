@@ -1,11 +1,12 @@
 <script>
     import { tick, onMount, onDestroy } from 'svelte';
-    import { grammarCmd, grammar, examplesCmd, examples } from '../../../config/variables.ts';
-    import commandLineStore from '../CommandLineStore.ts';
+    import { grammarCmd, grammar, examplesCmd, examples } from '../config/variables.ts';
+    import commandLineStore from '../stores/commandLineStore.ts';
     import CommandLineList from '../components/CommandLineList.svelte';
 
     let interpreter = null;
     const store = commandLineStore();
+
     store.showInitializationMessage();
 
     const interpret = input => {
