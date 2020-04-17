@@ -74,16 +74,18 @@ pub trait Visitor {
         let val_b = self.visit_expression(&*node.node_b, context)?;
 
         match node.op {
-            Operator::Add => Result::Ok(val_a + val_b),
-            Operator::Subtract => Result::Ok(val_a - val_b),
-            Operator::Multiply => Result::Ok(val_a * val_b),
-            Operator::Divide => {
-                if val_b != 0 {
-                    Result::Ok(val_a / val_b)
-                } else {
-                    Result::Err(String::from("Operation forbidden"))
-                }
-            }
+            Operator::Add => val_a
+                .checked_add(val_b)
+                .ok_or(String::from("Overflow/underflow detected")),
+            Operator::Subtract => val_a
+                .checked_sub(val_b)
+                .ok_or(String::from("Overflow/underflow detected")),
+            Operator::Multiply => val_a
+                .checked_mul(val_b)
+                .ok_or(String::from("Overflow/underflow detected")),
+            Operator::Divide => val_a
+                .checked_div(val_b)
+                .ok_or(String::from("Overflow/underflow detected")),
         }
     }
 
