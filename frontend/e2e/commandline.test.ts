@@ -1,8 +1,8 @@
 import 'expect-puppeteer';
 
 describe('Testing user commandline', () => {
-    const COMMAND_INPUT_SELECTOR = 'input.command__input';
-    const COMMAND_TEXT_SELECTOR = '.entry__text';
+    const COMMAND_INPUT_SELECTOR = '[data-testid=command-input]';
+    const COMMAND_TEXT_SELECTOR = '[data-testid=entry-text]';
 
     beforeAll(() => page.goto('http://localhost:4000/'));
 

@@ -7,7 +7,7 @@
     {#if prefix}
         <span class="entry__prefix">{prefix}</span>
     {/if}
-    <span class="entry__text">{text}</span>
+    <span class="entry__text" data-testid="entry-text">{text}</span>
 </p>
 
 <style lang="scss">

@@ -41,6 +41,7 @@
     <span class="command__prefix">></span>
     <input
         class="command__input"
+        data-testid="command-input"
         type="text"
         spellcheck="false"
         bind:this={inputRef}
