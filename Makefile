@@ -16,3 +16,8 @@ test-interpreter:
 test-frontend:
 	cd frontend && \
 	npm run test
+
+test-frontend-ci:
+	cd frontend && \
+	npm i && \
+	npm run test

@@ -4,7 +4,10 @@ describe('Testing user commandline', () => {
     const COMMAND_INPUT_SELECTOR = 'input.command__input';
     const COMMAND_TEXT_SELECTOR = '.entry__text';
 
-    beforeAll(() => page.goto('http://localhost:4000/'));
+    beforeAll(async () => {
+        await page.goto('http://localhost:4000/');
+        page.on('console', m => console.warn(m.text()));
+    });
 
     it('should contain project name', async () => {
         await expect(page).toMatch('toy-interpreter');
@@ -17,8 +20,9 @@ describe('Testing user commandline', () => {
     });
 
     it('should focus command input onload', async () => {
-        const focusedElement = await page.evaluate(() => document.activeElement);
+        await page.waitForSelector(COMMAND_INPUT_SELECTOR);
         const commandInput = await page.$(COMMAND_INPUT_SELECTOR);
+        const focusedElement = await page.evaluate(() => document.activeElement);
 
         expect(focusedElement).not.toBeNull();
         expect(commandInput).not.toBeNull();
@@ -26,6 +30,7 @@ describe('Testing user commandline', () => {
     });
 
     it('handles basic input "2 + 2"', async () => {
+        await page.waitForSelector(COMMAND_INPUT_SELECTOR);
         await page.type(COMMAND_INPUT_SELECTOR, '2 + 2');
         await page.keyboard.press('Enter');
 
@@ -39,6 +44,7 @@ describe('Testing user commandline', () => {
     });
 
     it('declares and executes simple function', async () => {
+        await page.waitForSelector(COMMAND_INPUT_SELECTOR);
         await page.type(COMMAND_INPUT_SELECTOR, 'fun sum(a, b) = a + b');
         await page.keyboard.press('Enter');
 
@@ -55,6 +61,7 @@ describe('Testing user commandline', () => {
     });
 
     it('allows for scrolling input history', async () => {
+        await page.waitForSelector(COMMAND_INPUT_SELECTOR);
         await page.type(COMMAND_INPUT_SELECTOR, '2 + 2');
         await page.keyboard.press('Enter');
         await page.keyboard.press('ArrowUp');

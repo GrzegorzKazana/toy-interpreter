@@ -4,4 +4,8 @@ module.exports = {
         launchTimeout: 20000,
         port: 4000,
     },
+    launch: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    },
 };
