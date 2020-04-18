@@ -27,13 +27,9 @@
         }
     };
 
-    console.log('rendered CommandLineContainer');
-
     onMount(() => {
-        console.log('mounted CommandLineContainer');
         import('interpreter-js')
             .then(({ InterpreterJs }) => {
-                console.log('successfully fetched interpreter-js');
                 interpreter = InterpreterJs.new();
                 store.showInitCompleteMessage();
             })

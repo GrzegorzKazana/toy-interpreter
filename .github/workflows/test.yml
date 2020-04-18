@@ -44,6 +44,4 @@ jobs:
             # https://github.com/puppeteer/puppeteer/issues/290
             - run: sudo apt-get update
             - run: sudo apt-get install libgbm1
-            - run: ls
-            - run: ls interpreter-js
             - run: make test-frontend-ci
