@@ -15,6 +15,8 @@ build-frontend-ci:
 	export BASE_PATH=/toy-interpreter && \
 	npm run export -- --basepath toy-interpreter
 
+test-all: test-interpreter test-frontend
+
 test-interpreter:
 	cd interpreter && \
 	cargo test

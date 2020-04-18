@@ -57,7 +57,7 @@ export const examples = `
 `;
 
 export const welcomeHeader = `Welcome to toy-interpreter!
-A simple interpretter written in Rust running in Your browser using WebAssembly.
+A simple interpreter written in Rust running in Your browser using WebAssembly.
 `;
 
 export const welcomeFooter = `

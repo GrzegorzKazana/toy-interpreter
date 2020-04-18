@@ -4,10 +4,7 @@ describe('Testing user commandline', () => {
     const COMMAND_INPUT_SELECTOR = 'input.command__input';
     const COMMAND_TEXT_SELECTOR = '.entry__text';
 
-    beforeAll(async () => {
-        await page.goto('http://localhost:4000/');
-        page.on('console', m => console.warn(m.text()));
-    });
+    beforeAll(() => page.goto('http://localhost:4000/'));
 
     it('should contain project name', async () => {
         await expect(page).toMatch('toy-interpreter');
