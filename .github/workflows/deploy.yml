@@ -45,12 +45,12 @@ jobs:
             - run: sudo apt-get update
             - run: sudo apt-get install libgbm1
             - run: make test-frontend-ci
-            - run: make build-frontend
+            - run: make build-frontend-ci
             - name: upload frontend build
               uses: actions/upload-artifact@v1
               with:
                   name: frontend-build
-                  path: frontend/__sapper__/export
+                  path: frontend/__sapper__/export/toy-interpreter
 
     deploy-frontend:
         needs: test-and-build-frontend

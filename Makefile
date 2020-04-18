@@ -9,6 +9,12 @@ build-frontend:
 	export NODE_ENV=production && \
 	npm run export
 
+build-frontend-ci:
+	cd frontend && \
+	export NODE_ENV=production && \
+	export BASE_PATH=/toy-interpreter && \
+	npm run export -- --basepath toy-interpreter
+
 test-interpreter:
 	cd interpreter && \
 	cargo test
