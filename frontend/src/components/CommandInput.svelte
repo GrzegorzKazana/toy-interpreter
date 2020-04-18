@@ -19,6 +19,7 @@
             }
             case ARROW_UP: {
                 inputState.prev();
+                // prevent moving cursor to beginning of input on arrow up
                 e.preventDefault();
                 return;
             }
