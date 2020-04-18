@@ -31,7 +31,7 @@ pub enum Operator {
 pub struct InputTokenizer {}
 
 impl InputTokenizer {
-    pub fn get_token(&self, input: &str) -> TokenizerResult {
+    fn get_token(&self, input: &str) -> TokenizerResult {
         C::tokenize_fun_keyword(input)
             .or_else(|| C::tokenize_number(input))
             .or_else(|| C::tokenize_identifier(input))

@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+    pull_request:
+        branches: [master]
+
+jobs:
+    test-interpreter:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - run: cd interpreter
+            - uses: actions-rs/cargo@v1
+              with:
+                  command: test
+                  args: --manifest-path=interpreter/Cargo.toml
+
+    build-wasm:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Intall wasm-pack
+              uses: jetli/wasm-pack-action@v0.3.0
+            - name: build wasm binary
+              run: make build-interpreter
+            - name: upload wasm build
+              uses: actions/upload-artifact@v1
+              with:
+                  name: wasm-build
+                  path: interpreter-js
+
+    test-frontend:
+        needs: build-wasm
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: '10.x'
+            - uses: actions/download-artifact@v1
+              with:
+                  name: wasm-build
+                  path: interpreter-js
+            # https://github.com/puppeteer/puppeteer/issues/290
+            - run: sudo apt-get update
+            - run: sudo apt-get install libgbm1
+            - run: make test-frontend-ci

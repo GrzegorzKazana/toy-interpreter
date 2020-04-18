@@ -6,9 +6,6 @@ mod tokenizer;
 mod utils;
 mod visitor;
 
-// fun fib(n) = n ? (n - 1 ? fib(n - 1) + fib(n - 2) : 1) : 0
-// fun fac(n) = n ? n * fac(n - 1) : 1
-
 pub fn main() {
     let command_line = io::CommandLine {};
     let mut interpreter = interpreter::Interpreter::new();
