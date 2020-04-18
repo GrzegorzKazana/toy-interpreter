@@ -53,6 +53,9 @@ Feel free to give it a go at https://grzegorzkazana.github.io/toy-interpreter/.
 -   [Rust](https://www.rust-lang.org/) compiled to [WebAssembly](https://webassembly.org/) using [wasm-pack](https://github.com/rustwasm/wasm-pack).
 -   [Sapper](https://sapper.svelte.dev/) - server-side [Svelte](https://svelte.dev/) framework used for exporting static html (SSG)
 -   [Typescript](https://www.typescriptlang.org/)
+-   testing:
+    -   Rust: native `cargo test`
+    -   js/ts: `jest` + `puppeteer` for simple e2e
 
 ### How to run
 
