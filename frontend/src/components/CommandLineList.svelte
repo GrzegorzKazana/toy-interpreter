@@ -45,6 +45,8 @@
 
     .link {
         color: #fff;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
     }
 
     :global(.command-line) {
