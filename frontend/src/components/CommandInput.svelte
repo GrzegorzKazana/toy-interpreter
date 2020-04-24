@@ -40,6 +40,7 @@
 <p class="command">
     <span class="command__prefix">></span>
     <input
+        id="cmd-input"
         class="command__input"
         data-testid="command-input"
         type="text"
@@ -48,6 +49,7 @@
         value={$inputState.value}
         on:keydown={handleKeyPress}
         on:input={e => inputState.setValue(e.target.value)} />
+    <label for="cmd-input" class="command__label">Commandline input</label>
 </p>
 
 <style lang="scss">
@@ -71,6 +73,10 @@
 
         &__prefix {
             min-width: 1em;
+        }
+
+        &__label {
+            @include visually-hidden;
         }
     }
 </style>
