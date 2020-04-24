@@ -4,7 +4,7 @@
     "name": "toy-interpreter",
     "short_name": "t-interpreter",
     "display": "standalone",
-    "start_url": "/",
+    "start_url": "/toy-interpreter/",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
