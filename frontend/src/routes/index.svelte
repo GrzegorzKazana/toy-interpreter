@@ -4,8 +4,8 @@
 </script>
 
 <main class="page">
-    <CommandLineContainer let:lines let:interpret let:isInitialized let:inputHistory>
-        <CommandLineList {lines} {interpret} {isInitialized} {inputHistory} />
+    <CommandLineContainer let:lines let:interpret let:isInitialized>
+        <CommandLineList {lines} {interpret} {isInitialized} />
     </CommandLineContainer>
 </main>
 
